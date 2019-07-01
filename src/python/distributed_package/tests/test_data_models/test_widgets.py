@@ -1,0 +1,21 @@
+"""
+Author: David Crook
+Email: DaCrook@Microsoft.com
+"""
+from ai_acc_quality.result import Error, Result
+from ai_acc_quality.data_models.widget import Widget
+from helpers.generators import generate_widget
+
+class TestWidgets(object):
+    """
+    Test Suite against Results and Errors Objects
+    """
+
+    def test_widget(self):
+        """
+        Tests to ensure the assembly object can be converted to json properly
+        """
+        w = generate_widget()
+        _, s = w.to_json()
+        assert(type(s) is str)
+    

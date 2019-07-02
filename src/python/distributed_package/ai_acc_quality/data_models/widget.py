@@ -7,6 +7,7 @@ from ai_acc_quality.data_models.base_model import Base_Model
 from ai_acc_quality.data_models.telemetry import Telemetry
 from typing import List, Tuple, Dict
 import json
+from datetime import datetime
 
 class Widget_Classification(Base_Model):
     """
@@ -16,6 +17,7 @@ class Widget_Classification(Base_Model):
     std : float = None
     mean : float = None
     threshold : float = None
+    classified_time : datetime = None
 
     def is_good(self) -> Tuple[Result, bool]:
         """

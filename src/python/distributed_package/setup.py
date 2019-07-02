@@ -1,0 +1,42 @@
+from setuptools import setup, find_packages
+import io
+import os
+import sys
+
+NAME = "ai_acc_quality"
+AUTHOR = "Microsoft Corporation"
+AUTHOR_EMAIL = "dacrook@microsoft.com"
+DESCRIPTION = "DO LATER"
+PROJECT_URL = "PRIVATE"
+LICENSE = "Restricted"
+version = None
+
+if("--version" in sys.argv):
+    idx = sys.argv.index("--version")
+    arg_name = sys.argv.pop(idx)
+    version = sys.argv.pop(idx)
+    print(version)
+else:
+    raise Exception("MUST SUPPLY VERSION NUMBER")
+
+here = os.path.abspath(os.path.dirname(__file__))
+
+try:
+    with io.open(os.path.join(here, "README.md"), encoding="utf-8") as f:
+        long_description = "\n" + f.read()
+except FileNotFoundError:
+    long_description = DESCRIPTION
+
+setup(
+    name = NAME,
+    version = version,
+    author = AUTHOR,
+    author_email = AUTHOR_EMAIL,
+    description = DESCRIPTION,
+    long_description = long_description,
+    long_description_content_type = "text/markdown",
+    packages=find_packages(exclude=["contrib", "docs", "tests"])
+)
+
+
+

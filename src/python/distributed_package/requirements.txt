@@ -1,0 +1,4 @@
+azureml-sdk
+pickle
+numpy
+sklearn

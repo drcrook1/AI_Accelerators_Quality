@@ -3,24 +3,25 @@
 # Strict mode, fail on any error
 set -euo pipefail
 
-STEPS=CITM
+STEPS="CIPTM"
 
-usage() { 
-    echo "Usage: $0 -d <deployment-name> [-s <steps>] [-t <test-type>] [-l <location>]" 1>&2; 
-    echo "-s: specify which steps should be executed. Default=$STEPS" 1>&2; 
-    echo "    Possible values:" 1>&2; 
-    echo "      C=COMMON" 1>&2; 
-    echo "      I=INGESTION" 1>&2; 
-    echo "      T=TEST clients" 1>&2; 
-    echo "      M=METRICS reporting" 1>&2; 
+usage() {
+    echo "Usage: $0 -d <deployment-name> [-s <steps>] [-t <test-type>] [-l <location>]" 1>&2;
+    echo "-s: specify which steps should be executed. Default=$STEPS" 1>&2;
+    echo "    Possible values:" 1>&2;
+    echo "      C=COMMON" 1>&2;
+    echo "      I=INGESTION" 1>&2;
+    echo "      P=PROCESSING" 1>&2;
+    echo "      T=TEST clients" 1>&2;
+    echo "      M=METRICS reporting" 1>&2;
     echo "-t: test 1,5,10 thousands msgs/sec. Default=1"
     echo "-l: where to create the resources. Default=eastus"
-    exit 1; 
+    exit 1;
 }
 
 export PREFIX=''
-export LOCATION=''
-export TESTTYPE=''
+export LOCATION='eastus'
+export TESTTYPE='1'
 
 # Initialize parameters specified from command line
 while getopts ":d:s:t:l:" arg; do
@@ -46,18 +47,14 @@ if [[ -z "$PREFIX" ]]; then
 	usage
 fi
 
-if [[ -z "$LOCATION" ]]; then
-	export LOCATION="eastus"
-fi
-
-if [[ -z "$TESTTYPE" ]]; then
-	export TESTTYPE="1"
-fi
+export PROC_FUNCTION_DIR=../src/python/inference_function
+export PROC_FUNCTION_SKU=P2v2
 
 # 10000 messages/sec
 if [ "$TESTTYPE" == "10" ]; then
     export EVENTHUB_PARTITIONS=12
     export EVENTHUB_CAPACITY=12
+    export PROC_FUNCTION_WORKERS=12
     export TEST_CLIENTS=30
 fi
 
@@ -65,6 +62,7 @@ fi
 if [ "$TESTTYPE" == "5" ]; then
     export EVENTHUB_PARTITIONS=8
     export EVENTHUB_CAPACITY=6
+    export PROC_FUNCTION_WORKERS=8
     export TEST_CLIENTS=16
 fi
 
@@ -72,7 +70,8 @@ fi
 if [ "$TESTTYPE" == "1" ]; then
     export EVENTHUB_PARTITIONS=2
     export EVENTHUB_CAPACITY=2
-    export TEST_CLIENTS=3 
+    export TEST_CLIENTS=3
+    export PROC_FUNCTION_WORKERS=2
 fi
 
 # last checks and variables setup
@@ -105,6 +104,22 @@ if [ -z "$HAS_JQ" ]; then
     exit 1
 fi
 
+HAS_ZIP=$(command -v zip || true)
+if [ -z "$HAS_ZIP" ]; then
+    echo "zip not found"
+    echo "please install it using your package manager, for example, on Ubuntu:"
+    echo "  sudo apt install zip"
+    exit 1
+fi
+
+HAS_FUNC=$(command -v func || true)
+if [ -z "$HAS_FUNC" ]; then
+    echo "Azure Functions Core Tools not found"
+    echo "please install them as described here:"
+    echo "https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local"
+    exit 1
+fi
+
 AZ_SUBSCRIPTION_NAME=$(az account show --query name -o tsv || true)
 if [ -z "$AZ_SUBSCRIPTION_NAME" ]; then
     #az account show already shows error message "Please run 'az login' to setup account."
@@ -124,6 +139,7 @@ echo ". Subscription    => $AZ_SUBSCRIPTION_NAME"
 echo ". Resource Group  => $RESOURCE_GROUP"
 echo ". Region          => $LOCATION"
 echo ". EventHubs       => TU: $EVENTHUB_CAPACITY, Partitions: $EVENTHUB_PARTITIONS"
+echo ". Function        => SKU: $PROC_FUNCTION_SKU, Workers: $PROC_FUNCTION_WORKERS"
 echo ". Locusts         => $TEST_CLIENTS"
 echo
 
@@ -133,20 +149,20 @@ echo
 echo "***** [C] Setting up COMMON resources"
 
     export AZURE_STORAGE_ACCOUNT=$PREFIX"storage"
-    export AZURE_STORAGE_ACCOUNT_GEN2=$PREFIX"storagegen2"
 
     RUN=`echo $STEPS | grep C -o || true`
     if [ ! -z "$RUN" ]; then
         ./01-create-resource-group.sh
         ./02-create-storage-account.sh
     fi
-echo 
+echo
 
 echo "***** [I] Setting up INGESTION"
-    
-    export EVENTHUB_NAMESPACE=$PREFIX"eventhubs"    
-    export EVENTHUB_NAME=$PREFIX"in-"$EVENTHUB_PARTITIONS
-    export EVENTHUB_CG="delta"
+
+    export EVENTHUB_NAMESPACE=$PREFIX"eventhubs"
+    export EVENTHUB_NAME_TELEMETRY="telemetry-hub"
+    export EVENTHUB_NAME_PREDICTION="predictions-hub"
+    export EVENTHUB_CG="scoring"
 
     RUN=`echo $STEPS | grep I -o || true`
     if [ ! -z "$RUN" ]; then
@@ -154,11 +170,20 @@ echo "***** [I] Setting up INGESTION"
     fi
 echo
 
+echo "***** [P] Setting up PROCESSING"
+
+    export PROC_FUNCTION_APP_NAME=$PREFIX"process"
+
+    RUN=`echo $STEPS | grep P -o || true`
+    if [ ! -z "$RUN" ]; then
+        ./04-create-scoring-function.sh
+    fi
+echo
 echo "***** [T] Starting up TEST clients"
 
     RUN=`echo $STEPS | grep T -o || true`
     if [ ! -z "$RUN" ]; then
-        ./04-run-clients.sh
+        ./05-run-clients.sh
     fi
 echo
 
@@ -166,9 +191,8 @@ echo "***** [M] Starting METRICS reporting"
 
     RUN=`echo $STEPS | grep M -o || true`
     if [ ! -z "$RUN" ]; then
-        ./05-report-throughput.sh
+        ./06-report-throughput.sh
     fi
 echo
 
 echo "***** Done"
-

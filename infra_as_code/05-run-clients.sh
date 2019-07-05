@@ -24,7 +24,7 @@ echo 'create test clients'
 echo ". count: $TEST_CLIENTS"
 
 echo "deploying locust..."
-locust_output=$(az group deployment create -g $RESOURCE_GROUP --template-file data_generator/locust.arm.json --parameters eventHubNamespace=$EVENTHUB_NAMESPACE eventHubName=$EVENTHUB_NAME eventHubKey=$EVENTHUB_KEY storageAccountName=$AZURE_STORAGE_ACCOUNT fileShareName=locust numberOfInstances=$TEST_CLIENTS)
+locust_output=$(az group deployment create -g $RESOURCE_GROUP --template-file data_generator/locust.arm.json --parameters eventHubNamespace=$EVENTHUB_NAMESPACE eventHubName=$EVENTHUB_NAME_TELEMETRY eventHubKey=$EVENTHUB_KEY storageAccountName=$AZURE_STORAGE_ACCOUNT fileShareName=locust numberOfInstances=$TEST_CLIENTS)
 LOCUST_MONITOR=$(jq -r .properties.outputs.locustMonitor.value <<< "$locust_output")
 sleep 10
 

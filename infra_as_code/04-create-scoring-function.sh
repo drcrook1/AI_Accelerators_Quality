@@ -26,15 +26,17 @@ az functionapp create -g $RESOURCE_GROUP -n $PROC_FUNCTION_APP_NAME \
 
 echo 'getting shared access key'
 EVENTHUB_CS=`az eventhubs namespace authorization-rule keys list -g $RESOURCE_GROUP --namespace-name $EVENTHUB_NAMESPACE --name RootManageSharedAccessKey --query "primaryConnectionString" -o tsv`
-
+ 
 echo 'adding app settings for connection strings'
-setting_template="$PROC_FUNCTION_DIR/local.settings.sample.json"
-setting_out="$PROC_FUNCTION_DIR/local.settings.json"
-if [ -e "$setting_out" ]; then
-	setting_template="$setting_out"
-fi
-jq ".Values.EventHubsConnectionString = \"$EVENTHUB_CS\"" $setting_template > $setting_out.tmp
-mv $setting_out.tmp $setting_out
+
+echo ". EventHubsConnectionString"
+az functionapp config appsettings set --name $PROC_FUNCTION_APP_NAME \
+    --resource-group $RESOURCE_GROUP \
+    --settings EventHubsConnectionString=$EVENTHUB_CS \
+    -o tsv >> log.txt
 
 echo 'publishing app'
-(cd "$PROC_FUNCTION_DIR" && func azure functionapp publish "$PROC_FUNCTION_APP_NAME" --publish-local-settings --overwrite-settings)
+(
+cd ../src/python/inference_function
+PIP_FIND_LINKS=../distributed_package/dist/ func azure functionapp publish "$PROC_FUNCTION_APP_NAME"
+)

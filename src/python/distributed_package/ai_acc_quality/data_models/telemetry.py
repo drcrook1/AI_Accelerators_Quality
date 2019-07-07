@@ -8,6 +8,8 @@ from datetime import datetime
 from typing import Tuple, Dict
 import json
 
+TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+
 class Telemetry(Base_Model):
     """
     Class defining the widget being manufactured
@@ -26,11 +28,17 @@ class Telemetry(Base_Model):
         d["ambient_temp"] = self.ambient_temp
         d["ambient_humidity"] = self.ambient_humidity
         d["flux_capacitance"] = self.flux_capacitance
-        d["time_stamp"] = self.time_stamp.strftime("%Y-%m-%d %H:%M:%S")
+        d["time_stamp"] = self.time_stamp.strftime(TIME_FORMAT)
         return Result(True), d
 
-    def to_json(self) -> Tuple[Result, str]:
-        _, d = self.to_dict()
-        s = json.dumps(d)
-        return Result(True), s
-        
+    @classmethod
+    def from_dict(cls, data):
+        w = cls()        
+        w.voltage = data["voltage"]
+        w.amperage = data["amperage"]
+        w.ambient_temp = data["ambient_temp"]
+        w.ambient_humidity = data["ambient_humidity"]
+        w.flux_capacitance = data["flux_capacitance"]
+        w.serial_number = data["serial_number"]
+        w.time_stamp = datetime.strptime(data["time_stamp"], TIME_FORMAT)
+        return w

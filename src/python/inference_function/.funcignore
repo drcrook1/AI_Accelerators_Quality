@@ -3,3 +3,6 @@
 local.settings.json
 test
 .env
+env
+bin
+obj

@@ -47,7 +47,6 @@ if [[ -z "$PREFIX" ]]; then
 	usage
 fi
 
-export PROC_FUNCTION_DIR=../src/python/inference_function
 export PROC_FUNCTION_SKU=P2v2
 
 # 10000 messages/sec

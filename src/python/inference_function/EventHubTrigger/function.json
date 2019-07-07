@@ -7,8 +7,15 @@
       "direction": "in",
       "eventHubName": "telemetry-hub",
       "connection": "EventHubsConnectionString",
-      "cardinality": "many",
-      "consumerGroup": "$Default"
+      "cardinality": "one",
+      "consumerGroup": "scoring"
+    },
+    {
+      "type": "eventHub",
+      "name": "$return",
+      "direction": "out",
+      "eventHubName": "predictions-hub",
+      "connection": "EventHubsConnectionString"
     }
   ]
 }

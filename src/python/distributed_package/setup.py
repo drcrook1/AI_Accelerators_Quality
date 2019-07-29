@@ -11,6 +11,10 @@ PROJECT_URL = "PRIVATE"
 LICENSE = "Restricted"
 version = None
 
+if sys.version_info <= (3, 0):
+    sys.stdout.write("Sorry, requires Python 3.x, not Python 2.x\n")
+    sys.exit(1)
+
 if("--version" in sys.argv):
     idx = sys.argv.index("--version")
     arg_name = sys.argv.pop(idx)

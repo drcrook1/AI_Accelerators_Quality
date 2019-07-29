@@ -38,5 +38,8 @@ az functionapp config appsettings set --name $PROC_FUNCTION_APP_NAME \
 echo 'publishing app'
 (
 cd ../src/python/inference_function
+export PIP_FIND_LINKS=../distributed_package/dist/
+test -d $PIP_FIND_LINKS || (echo "Can't find $PWD/$PIP_FIND_LINKS. Have you run setup.py? E.g. 'python3 setup.py --version 0.0.0 sdist bdist_wheel'"; exit 1)
+test -f local.settings.json || cp local.settings.sample.json local.settings.json 
 PIP_FIND_LINKS=../distributed_package/dist/ func azure functionapp publish "$PROC_FUNCTION_APP_NAME"
 )

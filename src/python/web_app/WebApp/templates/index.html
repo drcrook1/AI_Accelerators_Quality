@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="starter-template">
+    <br>
+    <br>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+            <th scope="col">Widget Serial #</th>
+            <th scope="col">Line #</th>
+            <th scope="col">Std from Normal</th>
+            <th scope="col">Good Or Bad</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+            <th scope="row">0001</th>
+            <td>1</td>
+            <td>1.2</td>
+            <td>Good</td>
+            </tr>
+            <tr>
+            <th scope="row">0001</th>
+            <td>1</td>
+            <td>1.2</td>
+            <td>Good</td>
+            </tr>
+            <tr>
+            <th scope="row">0001</th>
+            <td>1</td>
+            <td>1.2</td>
+            <td>Good</td>
+            </tr>
+        </tbody>
+    </table>
+          
+</div>
+      
+      
+{% endblock %}
+
+{% block pagescripts %}
+<script type="text/javascript">
+	var test_endpoint =  "{{ url_for('security.test') }}";
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='pagescripts/index.js') }}"></script>
+{% endblock %}

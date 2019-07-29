@@ -1,0 +1,28 @@
+FROM continuumio/miniconda3
+
+RUN apt-get update -y
+RUN apt-get upgrade -y
+
+RUN apt-get install build-essential -y
+
+RUN pip install --upgrade pip setuptools wheel
+
+RUN conda install psutil -y
+
+ADD requirements.txt /app/
+RUN pip install -r /app/requirements.txt
+
+EXPOSE 80
+
+COPY . /WebApp/
+
+RUN mv /WebApp/run.py /run.py
+
+RUN chmod -x /run.py
+
+ENV PYTHONUNBUFFERED 1
+
+# Turn on the Flask-DebugToolbar
+ENV FLASK_DEBUG 1
+
+CMD ["python", "/run.py"]

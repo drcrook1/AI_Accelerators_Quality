@@ -15,7 +15,30 @@ class Base_Model(ABC):
     @abstractclassmethod
     def to_dict(self) -> Tuple[Result, Dict]:
         raise NotImplementedError()
+    
+    @staticmethod
+    def _list_to_dict(data):
+        if(data is None):
+            return None
+        return [datum.to_dict()[1] for datum in data]
 
-    @abstractclassmethod
+    @staticmethod
+    def _list_from_dict(data, destType):
+        if(data is None):
+            return None
+        return list(map(destType.from_dict, data))
+
     def to_json(self) -> Tuple[Result, str]:
+        result, d = self.to_dict()
+        if(result.success is False):
+            return result
+        s = json.dumps(d)
+        return Result(True), s
+
+    @classmethod
+    def from_json(cls, data):
+        return cls.from_dict(json.loads(data))
+    
+    @abstractclassmethod
+    def from_dict(cls, data) -> Tuple[Result, Dict]:
         raise NotImplementedError()

@@ -6,7 +6,6 @@ from ai_acc_quality.result import Result, Error
 from ai_acc_quality.data_models.base_model import Base_Model
 from ai_acc_quality.data_models.telemetry import Telemetry
 from typing import List, Tuple, Dict
-import json
 from datetime import datetime
 
 class Widget_Classification(Base_Model):
@@ -34,12 +33,7 @@ class Widget_Classification(Base_Model):
         d["std"] = self.std
         d["mean"] = self.mean
         d["threshold"] = self.threshold
-        return Result(True), d
-
-    def to_json(self) -> Tuple[Result, str]:
-        _, d = self.to_dict()
-        s = json.dumps(d)
-        return Result(True), s        
+        return Result(True), d     
 
 class Widget(Base_Model):
     """
@@ -52,18 +46,14 @@ class Widget(Base_Model):
     def to_dict(self) -> Tuple[Result, Dict]:
         d = {}
         d["serial_number"] = self.serial_number
-        telies = self.telemetry
-        if(telies is not None):
-            d["telemetry"] = [tel.to_dict()[1] for tel in telies]
-        else:
-            d["telemetry"] = None
-        if(self.classification is not None):
-            _, d["classification"] = self.classification.to_dict()
-        else:
-            d["classification"] = None
+        d["telemetry"] = self._list_to_dict(self.telemetry)
+        d["classification"] = self._list_to_dict(self.classification)
         return Result(True), d
 
-    def to_json(self) -> Tuple[Result, str]:
-        _, d = self.to_dict()
-        s = json.dumps(d)
-        return Result(True), s
+    @classmethod
+    def from_dict(cls, data):
+        w = cls()
+        w.serial_number = data["serial_number"]
+        w.telemetry = cls._list_from_dict(data["telemetry"], Telemetry)
+        w.classification = cls._list_from_dict(data["classification"], Widget_Classification)
+        return w

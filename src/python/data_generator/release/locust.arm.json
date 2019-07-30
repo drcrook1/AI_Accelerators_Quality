@@ -2,12 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "fileShareName": {
-      "type": "string",
-      "metadata": {
-        "description": "Name of existing file share to be mounted"
-      }
-    },
     "eventHubNamespace": {
       "type": "string",
       "metadata": {
@@ -34,7 +28,6 @@
     },
     "imageName": {
       "type": "string",
-      "defaultValue": "yorek/locustio",
       "metadata": {
         "description": "Docker image to deploy"
       }
@@ -200,7 +193,14 @@
           }
         ],
         "osType": "Linux",
-        "restartPolicy": "OnFailure"
+        "restartPolicy": "OnFailure",
+        "imageRegistryCredentials": [
+          {
+            "server": "[parameters('imageRegistry')]",
+            "username": "[parameters('imageRegistryUsername')]",
+            "password": "[parameters('imageRegistryPassword')]"
+          }
+        ]
       },
       "copy": {
         "name": "ContainerGroupCopy",

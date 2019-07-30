@@ -8,7 +8,7 @@ CONTAINER_REGISTRY=${CONTAINER_REGISTRY-${PREFIX}acr}
 PYTHON_PACKAGE_REPO=${PYTHON_PACKAGE_REPO}
 
 echo "checking container registry exists..."
-if ! az acr create show -g $RESOURCE_GROUP -n $CONTAINER_REGISTRY ; then
+if ! az acr show -g $RESOURCE_GROUP -n $CONTAINER_REGISTRY ; then
   echo "creating container registry..."
   az acr create -g $RESOURCE_GROUP -n $CONTAINER_REGISTRY --sku Basic --admin-enabled true \
     -o tsv

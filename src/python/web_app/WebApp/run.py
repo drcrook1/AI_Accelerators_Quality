@@ -3,7 +3,7 @@ Author: David Crook
 Copyright: Microsoft Corporation 2019
 """
 
-from WebApp.app import create_app
+from webapp.app import create_app
 from flask import render_template
 
 app = create_app()

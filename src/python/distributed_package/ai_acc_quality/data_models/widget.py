@@ -33,13 +33,21 @@ class Widget_Classification(Base_Model):
         d["std"] = self.std
         d["mean"] = self.mean
         d["threshold"] = self.threshold
-        return Result(True), d     
+        return Result(True), d
+
+    def from_dict(self, data):
+        self.std_dist = data["std_dist"]
+        self.std = data["std"]
+        self.mean = data["mean"]
+        self.threshold = data["threshold"]
 
 class Widget(Base_Model):
     """
     Class defining the widget being manufactured
     """
     serial_number : str = None
+    factory_id : str = None
+    line_id : str = None
     telemetry : List[Telemetry] = None
     classification : Widget_Classification = None
 

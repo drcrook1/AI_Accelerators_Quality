@@ -9,14 +9,21 @@ RUN pip install --upgrade pip setuptools wheel
 
 RUN conda install psutil -y
 
+# Install PyODBC PreReqs
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN apt-get update -y
+RUN ACCEPT_EULA=Y apt-get install msodbcsql17
+# End install PyODBC PreReqs
+
 ADD requirements.txt /app/
 RUN pip install -r /app/requirements.txt
 
 EXPOSE 80
 
-COPY . /WebApp/
+COPY . /webapp/
 
-RUN mv /WebApp/run.py /run.py
+RUN mv /webapp/run.py /run.py
 
 RUN chmod -x /run.py
 

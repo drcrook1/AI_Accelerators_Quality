@@ -33,7 +33,7 @@ class Telemetry(Base_Model):
 
     @classmethod
     def from_dict(cls, data):
-        w = cls()        
+        w = cls()
         w.voltage = data["voltage"]
         w.amperage = data["amperage"]
         w.ambient_temp = data["ambient_temp"]

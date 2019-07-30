@@ -79,7 +79,7 @@
               "environmentVariables": [
                 {
                   "name": "EVENTHUB_KEY",
-                  "value": "[parameters('eventHubKey')]"
+                  "secureValue": "[parameters('eventHubKey')]"
                 },
                 {
                   "name": "EVENTHUB_NAMESPACE",
@@ -160,7 +160,7 @@
               "environmentVariables": [
                 {
                   "name": "EVENTHUB_KEY",
-                  "value": "[parameters('eventHubKey')]"
+                  "secureValue": "[parameters('eventHubKey')]"
                 },
                 {
                   "name": "EVENTHUB_NAMESPACE",

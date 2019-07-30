@@ -2,6 +2,6 @@
 
 set -euo pipefail
 
-./create-storage-account.sh
-./create-event-hub.sh
-./create-scoring-function.sh
+bash create-storage-account.sh
+bash create-event-hub.sh
+bash create-scoring-function.sh

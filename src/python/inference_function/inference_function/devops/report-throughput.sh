@@ -3,7 +3,12 @@
 # Strict mode, fail on any error
 set -euo pipefail
 
-eh_resource=$(az resource show -g $RESOURCE_GROUP --resource-type Microsoft.EventHub/namespaces -n "$EVENTHUB_NAMESPACE" --query id -o tsv)
+RESOURCE_GROUP=${RESOURCE_GROUP-${PREFIX}}
+EVENTHUB_NAMESPACE=${EVENTHUB_NAMESPACE:-${PREFIX}ehubs}
+EVENTHUB_CAPACITY=${EVENTHUB_CAPACITY:-2}
+
+eh_resource=$(az eventhubs namespace show -g $RESOURCE_GROUP -n "$EVENTHUB_NAMESPACE" --query id -o tsv)
+eh_capacity=$(az eventhubs namespace show -g $RESOURCE_GROUP -n "$EVENTHUB_NAMESPACE" --query sku.capacity -o tsv)
 metric_names="IncomingMessages IncomingBytes OutgoingMessages OutgoingBytes ThrottledRequests"
 fmt="%28s%20s%20s%20s%20s%20s\n"
 echo "Event Hub capacity: $EVENTHUB_CAPACITY throughput units (this determines MAX VALUE below)."

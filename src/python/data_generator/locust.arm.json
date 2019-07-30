@@ -2,12 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "storageAccountName": {
-      "type": "string",
-      "metadata": {
-        "description": "Storage Account Name"
-      }
-    },
     "fileShareName": {
       "type": "string",
       "metadata": {
@@ -45,6 +39,15 @@
         "description": "Docker image to deploy"
       }
     },
+    "imageRegistry": {
+      "type": "string"
+    },
+    "imageRegistryUsername": {
+      "type": "string"
+    },
+    "imageRegistryPassword": {
+      "type": "securestring"
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -59,8 +62,7 @@
     "clientMemoryInGb": "1",
     "masterContainerGroupName": "locust-master",
     "clientContainerGroupNamePrefix": "locust-",
-    "containerName": "locust",
-    "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+    "containerName": "locust"
   },
   "resources": [
     {
@@ -106,20 +108,12 @@
                 }
               ],
               "command": [
-                "locust",
+                "/venv/bin/locust",
                 "--master",
                 "--expect-slaves",
                 "[parameters('numberOfInstances')]",
                 "--host",
-                "[concat('https://', parameters('eventHubNamespace'), '.servicebus.windows.net')]",
-                "-f",
-                "simulator.py"
-              ],
-              "volumeMounts": [
-                {
-                  "mountPath": "/locust",
-                  "name": "locust"
-                }
+                "[concat('https://', parameters('eventHubNamespace'), '.servicebus.windows.net')]"
               ]
             }
           }
@@ -129,25 +123,22 @@
           "ports": [
             {
               "port": 8089
-                },
-                {
-                  "port": 5557
-                },
-                {
-                  "port": 5558
+            },
+            {
+              "port": 5557
+            },
+            {
+              "port": 5558
             }
           ]
         },
         "osType": "Linux",
         "restartPolicy": "OnFailure",
-        "volumes": [
+        "imageRegistryCredentials": [
           {
-            "name": "locust",
-            "azureFile": {
-              "shareName": "[parameters('fileShareName')]",
-              "storageAccountName": "[parameters('storageAccountName')]",
-              "storageAccountKey": "[listKeys(variables('storageAccountId'),'2018-02-01').keys[0].value]"
-            }
+            "server": "[parameters('imageRegistry')]",
+            "username": "[parameters('imageRegistryUsername')]",
+            "password": "[parameters('imageRegistryPassword')]"
           }
         ]
       }
@@ -156,9 +147,9 @@
       "type": "Microsoft.ContainerInstance/containerGroups",
       "name": "[format('{0}{1:D3}', variables('clientContainerGroupNamePrefix'), copyIndex())]",
       "apiVersion": "2018-10-01",
- "dependsOn": [
-    "[resourceId('Microsoft.ContainerInstance/containerGroups', variables('masterContainerGroupName'))]"
-  ],
+      "dependsOn": [
+        "[resourceId('Microsoft.ContainerInstance/containerGroups', variables('masterContainerGroupName'))]"
+      ],
       "location": "[parameters('location')]",
       "properties": {
         "containers": [
@@ -198,36 +189,18 @@
                 }
               ],
               "command": [
-                "locust",
+                "/venv/bin/locust",
                 "--slave",
                 "--master-host",
                 "[reference(resourceId('Microsoft.ContainerInstance/containerGroups', variables('masterContainerGroupName'))).ipAddress.ip]",
                 "--host",
-                "[concat('https://', parameters('eventHubNamespace'), '.servicebus.windows.net')]",
-                "-f",
-                "simulator.py"
-              ],
-              "volumeMounts": [
-                {
-                  "mountPath": "/locust",
-                  "name": "locust"
-                }
+                "[concat('https://', parameters('eventHubNamespace'), '.servicebus.windows.net')]"
               ]
             }
           }
         ],
         "osType": "Linux",
-        "restartPolicy": "OnFailure",
-        "volumes": [
-          {
-            "name": "locust",
-            "azureFile": {
-              "shareName": "[parameters('fileShareName')]",
-              "storageAccountName": "[parameters('storageAccountName')]",
-              "storageAccountKey": "[listKeys(variables('storageAccountId'),'2018-02-01').keys[0].value]"
-            }
-          }
-        ]
+        "restartPolicy": "OnFailure"
       },
       "copy": {
         "name": "ContainerGroupCopy",
@@ -239,7 +212,6 @@
     "locustMonitor": {
       "type": "string",
       "value": "[concat('http://', reference(resourceId('Microsoft.ContainerInstance/containerGroups/', variables('masterContainerGroupName'))).ipAddress.ip, ':8089')]"
-
     }
   }
 }

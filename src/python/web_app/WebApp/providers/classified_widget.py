@@ -4,6 +4,7 @@ Copyright: Microsoft Corporation 2019
 """
 from ai_acc_quality.data_models.widget import Widget, Widget_Classification
 from typing import List
+import json
 
 def widget_from_row(row) -> Widget:
     w_class = Widget_Classification()
@@ -44,7 +45,7 @@ def many_widgets_to_json(widgets : List[Widget]) -> str:
     js_widgets = []
     for widget in widgets:
         js_widgets.append(widget.to_json())
-    return js_widgets
+    return json.dumps(js_widgets)
 
 def get_bad_widgets(db_cnxn, to_json : bool = False) -> List[Widget]:
     cursor = db_cnxn.cursor()

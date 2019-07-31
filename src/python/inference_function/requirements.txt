@@ -1,1 +1,1 @@
-ai_acc_quality==0.0.193
+ai_acc_quality==0.0.259

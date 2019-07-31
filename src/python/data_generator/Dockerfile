@@ -29,7 +29,7 @@ FROM runtime AS test
 
 RUN /venv/bin/pip install pytest pytest-cov
 
-ADD tests /app/
+ADD tests /app/tests
 
 RUN cd /app && /venv/bin/python -m pytest --doctest-modules --junitxml=./tests/junit/test-results.xml --cov=./ ./tests/ --cov-report=xml:./tests/junit/coverage.xml --cov-report=html:./tests/junit/cov_html
 

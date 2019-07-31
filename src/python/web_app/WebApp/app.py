@@ -14,4 +14,7 @@ def create_app():
     from webapp.apis.security import security
     app.register_blueprint(security)
 
+    from webapp.apis.widgets import widgets
+    app.register_blueprint(widgets)
+
     return app

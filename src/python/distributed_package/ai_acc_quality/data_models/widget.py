@@ -7,6 +7,7 @@ from ai_acc_quality.data_models.base_model import Base_Model
 from ai_acc_quality.data_models.telemetry import Telemetry
 from typing import List, Tuple, Dict
 from datetime import datetime
+import json
 
 class Widget_Classification(Base_Model):
     """
@@ -41,6 +42,13 @@ class Widget_Classification(Base_Model):
         self.mean = data["mean"]
         self.threshold = data["threshold"]
 
+    def to_json(self) -> str:
+        """
+        converts this object to a json object
+        """
+        _, s_dict = self.to_dict()
+        return json.dumps(s_dict)
+
 class Widget(Base_Model):
     """
     Class defining the widget being manufactured
@@ -57,6 +65,13 @@ class Widget(Base_Model):
         d["telemetry"] = self._list_to_dict(self.telemetry)
         d["classification"] = self._list_to_dict(self.classification)
         return Result(True), d
+
+    def to_json(self) -> str:
+        """
+        converts this object to a json object
+        """
+        _, s_dict = self.to_dict()
+        return json.dumps(s_dict)
 
     @classmethod
     def from_dict(cls, data):

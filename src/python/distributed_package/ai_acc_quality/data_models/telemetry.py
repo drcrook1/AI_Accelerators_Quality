@@ -31,6 +31,13 @@ class Telemetry(Base_Model):
         d["time_stamp"] = self.time_stamp.strftime(TIME_FORMAT)
         return Result(True), d
 
+    def to_json(self) -> str:
+        """
+        converts this object to a json object
+        """
+        _, s_dict = self.to_dict()
+        return json.dumps(s_dict)
+
     @classmethod
     def from_dict(cls, data):
         w = cls()

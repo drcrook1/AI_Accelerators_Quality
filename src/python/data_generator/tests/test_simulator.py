@@ -12,7 +12,10 @@ from locust import TaskSet
 os.environ["EVENTHUB_NAMESPACE"] = "myns"
 os.environ["EVENTHUB_NAME"] = "myeh"
 os.environ["EVENTHUB_KEY"] = "mykey"
-from simulator import DeviceSimulator
+
+import locustfile
+from locustfile import DeviceSimulator
+
 
 class TestSimulator(object):
     """

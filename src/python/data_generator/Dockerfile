@@ -1,24 +1,40 @@
-FROM python:3.6.8-alpine3.9 AS build
+################################################################################
+FROM python:3.6.8-alpine3.9 AS base
 
+################################################################################
+FROM base AS build
+
+#Passing secret into a stage that is not the last stage in a multi-stage pipeline is safe
 ARG IMAGE_SERVER
 
-RUN apk add build-base
-
-RUN apk add zeromq-dev
+RUN apk add build-base zeromq-dev
 
 RUN python -m venv /venv
 
 ADD requirements.txt .
 
-RUN PIP_EXTRA_INDEX_URL=${IMAGE_SERVER} /venv/bin/pip install -r requirements.txt
+RUN /venv/bin/pip install --extra-index-url=${IMAGE_SERVER} -r requirements.txt
 
-FROM python:3.6.8-alpine3.9 AS production
+################################################################################
+FROM base AS runtime
 
-RUN apk add zeromq
+RUN apk --no-cache add zeromq
 
 COPY --from=build /venv /venv
 
-ADD locustfile.py /
+ADD locustfile.py .
+
+################################################################################
+FROM runtime AS test
+
+RUN /venv/bin/pip install pytest pytest-cov
+
+ADD tests tests
+
+RUN /venv/bin/python -m pytest --doctest-modules --junitxml=./tests/junit/test-results.xml --cov=./ai_acc_quality/ ./tests/ --cov-report=xml:./tests/junit/coverage.xml --cov-report=html:./tests/junit/cov_html
+
+################################################################################
+FROM runtime AS production
 
 EXPOSE 8089 5557 5558
 

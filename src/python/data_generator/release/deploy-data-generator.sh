@@ -11,7 +11,7 @@ TEST_CLIENTS=${TEST_CLIENTS:-1}
 IMAGE_VERSION=${BUILD_BUILDID:-latest}
 
 echo 'getting event hub key'
-eventHubKey=`az eventhubs namespace authorization-rule keys list --name RootManageSharedAccessKey --namespace-name $EVENTHUB_NAMESPACE --resource-group $RESOURCE_GROUP --query 'primaryKey' -o tsv`
+eventHubKey=$(az eventhubs namespace authorization-rule keys list --name RootManageSharedAccessKey --namespace-name $EVENTHUB_NAMESPACE --resource-group $RESOURCE_GROUP --query 'primaryKey' -o tsv)
 
 echo 'getting ACR credentials'
 REGISTRY_LOGIN_SERVER=$(az acr show -n $CONTAINER_REGISTRY --query loginServer -o tsv)
@@ -19,6 +19,8 @@ REGISTRY_LOGIN_USER=$(az acr credential show -n $CONTAINER_REGISTRY --query user
 REGISTRY_LOGIN_PASS=$(az acr credential show -n $CONTAINER_REGISTRY --query passwords[0].value -o tsv)
 
 echo 'create test clients'
+echo ". group: $RESOURCE_GROUP"
+echo ". instance: locust-master"
 echo ". count: $TEST_CLIENTS"
 
 echo "deploying locust..."

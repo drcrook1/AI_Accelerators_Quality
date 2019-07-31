@@ -85,5 +85,5 @@ class Widget(Base_Model):
         w = cls()
         w.serial_number = data["serial_number"]
         w.telemetry = cls._list_from_dict(data["telemetry"], Telemetry)
-        w.classification = Widget_Classification.from_dict(data["classification"]) if data["classification"] is not None else None
+        w.classification = Widget_Classification.from_dict(data["classification"]) if "classification" in data else None
         return w

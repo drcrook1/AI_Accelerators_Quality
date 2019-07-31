@@ -64,8 +64,7 @@ class DeviceSimulator(TaskSet):
         w = Widget()
         w.serial_number = deviceId
         w.telemetry = [t]
-        (result, w_json) = w.to_json()
-        assert result.success
+        w_json = w.to_json()
 
         headers = dict(self.headers)
         brokerProperties = { 'PartitionKey': deviceId }

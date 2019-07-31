@@ -26,7 +26,6 @@ echo ". count: $TEST_CLIENTS"
 echo "deploying locust..."
 locust_output=$(az group deployment create -g $RESOURCE_GROUP --template-file locust.arm.json --parameters eventHubNamespace=$EVENTHUB_NAMESPACE eventHubName=$EVENTHUB_NAME_TELEMETRY eventHubKey=$eventHubKey numberOfInstances=$TEST_CLIENTS imageName=$REGISTRY_LOGIN_SERVER/generator:$IMAGE_VERSION imageRegistry=$REGISTRY_LOGIN_SERVER imageRegistryUsername=$REGISTRY_LOGIN_USER imageRegistryPassword=$REGISTRY_LOGIN_PASS)
 locustMonitor=$(jq -r .properties.outputs.locustMonitor.value <<< "$locust_output")
-sleep 10
 
 echo ". endpoint: $locustMonitor"
 
@@ -35,7 +34,7 @@ declare userCount=$((250*$TEST_CLIENTS))
 declare hatchRate=$((10*$TEST_CLIENTS))
 echo ". users: $userCount"
 echo ". hatch rate: $hatchRate"
-curl $locustMonitor/swarm -X POST -F "locust_count=$userCount" -F "hatch_rate=$hatchRate"
+curl $locustMonitor/swarm -X POST -F "locust_count=$userCount" -F "hatch_rate=$hatchRate" --retry 10 --retry-conn-refused
 
 echo 'done'
 echo 'starting to monitor locusts for 20 seconds... '

@@ -5,7 +5,7 @@
       "type": "eventHubTrigger",
       "name": "event",
       "direction": "in",
-      "eventHubName": "telemetry-hub",
+      "eventHubName": "telemetry",
       "connection": "EventHubsConnectionString",
       "cardinality": "one",
       "consumerGroup": "scoring"
@@ -14,7 +14,7 @@
       "type": "eventHub",
       "name": "$return",
       "direction": "out",
-      "eventHubName": "predictions-hub",
+      "eventHubName": "predictions",
       "connection": "EventHubsConnectionString"
     }
   ]

@@ -5,7 +5,7 @@
       "type": "eventHubTrigger",
       "name": "event",
       "direction": "in",
-      "eventHubName": "samples-workitems",
+      "eventHubName": "telemetry",
       "connection": "EventHubsConnectionString",
       "cardinality": "many",
       "consumerGroup": "$Default"

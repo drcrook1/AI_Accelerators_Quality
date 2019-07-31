@@ -9,6 +9,13 @@
       "connection": "EventHubsConnectionString",
       "cardinality": "many",
       "consumerGroup": "$Default"
+    },
+    {
+      "type": "eventHub",
+      "name": "$return",
+      "direction": "out",
+      "eventHubName": "prediction",
+      "connection": "EventHubsConnectionString"
     }
   ]
 }

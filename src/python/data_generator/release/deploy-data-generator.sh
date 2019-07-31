@@ -34,7 +34,7 @@ declare userCount=$((250*$TEST_CLIENTS))
 declare hatchRate=$((10*$TEST_CLIENTS))
 echo ". users: $userCount"
 echo ". hatch rate: $hatchRate"
-curl $locustMonitor/swarm -X POST -F "locust_count=$userCount" -F "hatch_rate=$hatchRate" --retry 10 --retry-conn-refused
+curl $locustMonitor/swarm -X POST -F "locust_count=$userCount" -F "hatch_rate=$hatchRate" --retry 10
 
 echo 'done'
 echo 'starting to monitor locusts for 20 seconds... '

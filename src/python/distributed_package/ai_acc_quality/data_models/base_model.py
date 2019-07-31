@@ -26,6 +26,7 @@ class Base_Model(ABC):
     def _list_from_dict(data, destType):
         if(data is None):
             return None
+        assert type(data) is list
         return list(map(destType.from_dict, data))
 
     @abstractclassmethod

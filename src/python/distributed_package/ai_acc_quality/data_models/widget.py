@@ -36,6 +36,7 @@ class Widget_Classification(Base_Model):
         d["threshold"] = self.threshold
         return Result(True), d
 
+    @classmethod
     def from_dict(self, data):
         self.std_dist = data["std_dist"]
         self.std = data["std"]
@@ -84,5 +85,5 @@ class Widget(Base_Model):
         w = cls()
         w.serial_number = data["serial_number"]
         w.telemetry = cls._list_from_dict(data["telemetry"], Telemetry)
-        w.classification = cls._list_from_dict(data["classification"], Widget_Classification)
+        w.classification = Widget_Classification.from_dict(data["classification"]) if data["classification"] is not None else None
         return w

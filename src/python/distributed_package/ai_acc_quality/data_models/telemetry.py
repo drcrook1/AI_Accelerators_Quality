@@ -46,6 +46,5 @@ class Telemetry(Base_Model):
         w.ambient_temp = data["ambient_temp"]
         w.ambient_humidity = data["ambient_humidity"]
         w.flux_capacitance = data["flux_capacitance"]
-        w.serial_number = data["serial_number"]
         w.time_stamp = datetime.strptime(data["time_stamp"], TIME_FORMAT)
         return w

@@ -28,12 +28,14 @@ class Base_Model(ABC):
             return None
         return list(map(destType.from_dict, data))
 
+    @abstractclassmethod
     def to_json(self) -> Tuple[Result, str]:
-        result, d = self.to_dict()
-        if(result.success is False):
-            return result
-        s = json.dumps(d)
-        return Result(True), s
+        raise NotImplementedError()
+        # result, d = self.to_dict()
+        # if(result.success is False):
+        #     return result
+        # s = json.dumps(d)
+        # return Result(True), s
 
     @classmethod
     def from_json(cls, data):

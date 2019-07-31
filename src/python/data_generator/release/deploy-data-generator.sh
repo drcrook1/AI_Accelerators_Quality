@@ -8,19 +8,21 @@ CONTAINER_REGISTRY=${CONTAINER_REGISTRY-${PREFIX}acr}
 EVENTHUB_NAMESPACE=${EVENTHUB_NAMESPACE:-${PREFIX}ehubs}
 EVENTHUB_NAME_TELEMETRY=${EVENTHUB_NAME_TELEMETRY:-telemetry}
 TEST_CLIENTS=${TEST_CLIENTS:-1}
+IMAGE_TAG=${BUILD_BUILDID:-latest}
 
 echo 'getting event hub key'
 eventHubKey=`az eventhubs namespace authorization-rule keys list --name RootManageSharedAccessKey --namespace-name $EVENTHUB_NAMESPACE --resource-group $RESOURCE_GROUP --query 'primaryKey' -o tsv`
 
 echo 'getting ACR credentials'
 REGISTRY_LOGIN_SERVER=$(az acr show -n $CONTAINER_REGISTRY --query loginServer -o tsv)
+REGISTRY_LOGIN_USER=$(az acr credential show -n $CONTAINER_REGISTRY --query username -o tsv)
 REGISTRY_LOGIN_PASS=$(az acr credential show -n $CONTAINER_REGISTRY --query passwords[0].value -o tsv)
 
 echo 'create test clients'
 echo ". count: $TEST_CLIENTS"
 
 echo "deploying locust..."
-locust_output=$(az group deployment create -g $RESOURCE_GROUP --template-file locust.arm.json --parameters eventHubNamespace=$EVENTHUB_NAMESPACE eventHubName=$EVENTHUB_NAME_TELEMETRY eventHubKey=$eventHubKey fileShareName=locust numberOfInstances=$TEST_CLIENTS imageRegistry=$REGISTRY_LOGIN_SERVER imageRegistryUsername=$CONTAINER_REGISTRY imageRegistryPassword=$REGISTRY_LOGIN_PASS)
+locust_output=$(az group deployment create -g $RESOURCE_GROUP --template-file locust.arm.json --parameters eventHubNamespace=$EVENTHUB_NAMESPACE eventHubName=$EVENTHUB_NAME_TELEMETRY eventHubKey=$eventHubKey numberOfInstances=$TEST_CLIENTS imageName=$REGISTRY_LOGIN_SERVER/generator:$IMAGE_TAG imageRegistry=$REGISTRY_LOGIN_SERVER imageRegistryUsername=$REGISTRY_LOGIN_USER imageRegistryPassword=$REGISTRY_LOGIN_PASS)
 locustMonitor=$(jq -r .properties.outputs.locustMonitor.value <<< "$locust_output")
 sleep 10
 

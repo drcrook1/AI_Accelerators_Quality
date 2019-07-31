@@ -8,7 +8,7 @@
       "eventHubName": "telemetry",
       "connection": "EventHubsConnectionString",
       "cardinality": "one",
-      "consumerGroup": "scoring"
+      "consumerGroup": "quality"
     },
     {
       "type": "eventHub",

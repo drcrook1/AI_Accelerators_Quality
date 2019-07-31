@@ -7,7 +7,7 @@
       "direction": "in",
       "eventHubName": "telemetry",
       "connection": "EventHubsConnectionString",
-      "cardinality": "many",
+      "cardinality": "one",
       "consumerGroup": "$Default"
     },
     {

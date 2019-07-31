@@ -24,3 +24,10 @@ class TestWidgets(object):
         widgets = [generate_widget().to_json() for i in range(0,10)]
         js = json.dumps(widgets)
         assert(type(js) is str)
+
+    def test_with_nones(self):
+        w = generate_widget()
+        w.telemetry = None
+        w.classification = None
+        s = w.to_json()
+        assert(type(s) is str)

@@ -62,8 +62,14 @@ class Widget(Base_Model):
     def to_dict(self) -> Tuple[Result, Dict]:
         d = {}
         d["serial_number"] = self.serial_number
-        d["telemetry"] = self._list_to_dict(self.telemetry)
-        d["classification"] = self._list_to_dict(self.classification)
+        if(self.telemetry is not None):
+            telies = []
+            for tel in self.telemetry:
+                _, t_dict = tel.to_dict()
+                telies.append(t_dict)
+            d["telemetry"] = telies
+        if(self.classification is not None):
+            _, d["classification"] = self.classification.to_dict()
         return Result(True), d
 
     def to_json(self) -> str:

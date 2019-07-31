@@ -20,5 +20,5 @@ class TestClassifiedWidgetsProvider(object):
         widget = get_widget(cursor, serial_number="w1")
         f_id = widget.factory_id
         assert(f_id == "kitty hawk")
-        is_good = widget.is_good
+        is_good = widget.classification.is_good
         assert(is_good is True)

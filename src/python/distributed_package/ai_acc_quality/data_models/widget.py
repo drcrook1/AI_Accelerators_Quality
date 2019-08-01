@@ -37,11 +37,13 @@ class Widget_Classification(Base_Model):
         return Result(True), d
 
     @classmethod
-    def from_dict(self, data):
-        self.std_dist = data["std_dist"]
-        self.std = data["std"]
-        self.mean = data["mean"]
-        self.threshold = data["threshold"]
+    def from_dict(cls, data):
+        c = cls()
+        c.std_dist = data["std_dist"]
+        c.std = data["std"]
+        c.mean = data["mean"]
+        c.threshold = data["threshold"]
+        return c
 
     def to_json(self) -> str:
         """

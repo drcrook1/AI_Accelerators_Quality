@@ -39,7 +39,10 @@ setup(
     description = DESCRIPTION,
     long_description = long_description,
     long_description_content_type = "text/markdown",
-    packages=find_packages(exclude=["contrib", "docs", "tests"])
+    packages=find_packages(exclude=["contrib", "docs", "tests"]),
+    install_requires=[
+          'python-dateutil',
+      ]
 )
 
 

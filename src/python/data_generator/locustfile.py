@@ -50,8 +50,7 @@ class DeviceSimulator(TaskSet):
     @task
     def sendData(self):
 
-        deviceIndex = random.randint(0, 999)
-        deviceId = 'contoso://device-id-{0}'.format(deviceIndex)
+        factoryId = 'factory-{0}'.format(random.randint(0, 999))
 
         t = Telemetry()
         t.voltage = random.uniform(10,100)
@@ -62,12 +61,14 @@ class DeviceSimulator(TaskSet):
         t.time_stamp = datetime.datetime.utcnow()
 
         w = Widget()
-        w.serial_number = deviceId
+        w.serial_number = uuid.uuid4().hex
+        w.factory_id = factoryId
+        w.line_id = random.choice(["L1", "L2", "L3"])
         w.telemetry = [t]
         w_json = w.to_json()
 
         headers = dict(self.headers)
-        brokerProperties = { 'PartitionKey': deviceId }
+        brokerProperties = { 'PartitionKey': factoryId }
         headers["BrokerProperties"] = json.dumps(brokerProperties)
         self.client.post(self.endpoint, data=w_json, verify=False, headers=headers)
 

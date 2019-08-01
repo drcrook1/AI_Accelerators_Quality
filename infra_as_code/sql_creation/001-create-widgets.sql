@@ -5,10 +5,10 @@ CREATE TABLE [dbo].[classified_widgets](
 	[mean] [float] NULL,
 	[threshold] [float] NULL,
 	[is_good] [bit] NULL,
-	[id] [bigint] NOT NULL,
+	[id] [nvarchar](200) NOT NULL,
 	[factory_id] [nvarchar](50) NOT NULL,
 	[line_id] [nvarchar](50) NOT NULL,
-	[classified_time] [datetime] NOT NULL,
+	[classified_time] [datetime2] NOT NULL,
  CONSTRAINT [PK_classified_widgets] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC

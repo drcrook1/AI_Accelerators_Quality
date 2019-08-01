@@ -5,10 +5,9 @@ Email: DaCrook@Microsoft.com
 from ai_acc_quality.result import Result, Error
 from ai_acc_quality.data_models.base_model import Base_Model
 from datetime import datetime
+import dateutil.parser as parser
 from typing import Tuple, Dict
 import json
-
-TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 class Telemetry(Base_Model):
     """
@@ -28,7 +27,7 @@ class Telemetry(Base_Model):
         d["ambient_temp"] = self.ambient_temp
         d["ambient_humidity"] = self.ambient_humidity
         d["flux_capacitance"] = self.flux_capacitance
-        d["time_stamp"] = self.time_stamp.strftime(TIME_FORMAT)
+        d["time_stamp"] = self.time_stamp.isoformat()
         return Result(True), d
 
     def to_json(self) -> str:
@@ -46,5 +45,5 @@ class Telemetry(Base_Model):
         w.ambient_temp = data["ambient_temp"]
         w.ambient_humidity = data["ambient_humidity"]
         w.flux_capacitance = data["flux_capacitance"]
-        w.time_stamp = datetime.strptime(data["time_stamp"], TIME_FORMAT)
+        w.time_stamp = parser.parse(data["time_stamp"])
         return w

@@ -65,6 +65,8 @@ class Widget(Base_Model):
     def to_dict(self) -> Tuple[Result, Dict]:
         d = {}
         d["serial_number"] = self.serial_number
+        d["factory_id"] = self.factory_id
+        d["line_id"] = self.line_id
         if(self.telemetry is not None):
             telies = []
             for tel in self.telemetry:
@@ -86,6 +88,8 @@ class Widget(Base_Model):
     def from_dict(cls, data):
         w = cls()
         w.serial_number = data["serial_number"]
+        w.factory_id = data["factory_id"]
+        w.line_id = data["line_id"]
         w.telemetry = cls._list_from_dict(data["telemetry"], Telemetry)
         w.classification = Widget_Classification.from_dict(data["classification"]) if "classification" in data else None
         return w

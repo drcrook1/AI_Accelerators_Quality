@@ -1,5 +1,5 @@
 ['mousemove', 'touchmove', 'touchstart'].forEach(function (eventType) {
-    document.getElementById('widget_telemetry').addEventListener(
+    document.getElementById('line_performance_charts').addEventListener(
         eventType,
         function (e) {
             var chart,
@@ -71,14 +71,14 @@ Highcharts.ajax({
 
         activity = JSON.parse(activity);
 
-        activity.datasets[0].name = "Flux Capacitance"
-        activity.datasets[0].unit = "Joules"
+        activity.datasets[0].name = "Deviation Trend"
+        activity.datasets[0].unit = "Std Deviations"
 
-        activity.datasets[1].name = "Amperage"
-        activity.datasets[1].unit = "Amps"
+        activity.datasets[1].name = "# Anomalies"
+        activity.datasets[1].unit = "Anomalies"
 
-        activity.datasets[2].name = "Voltage"
-        activity.datasets[2].unit = "Volts"
+        activity.datasets[2].name = "Total Widgets"
+        activity.datasets[2].unit = "Widgets"
 
         activity.datasets.forEach(function (dataset, i) {
 
@@ -89,7 +89,7 @@ Highcharts.ajax({
 
             var chartDiv = document.createElement('div');
             chartDiv.className = 'chart';
-            document.getElementById('widget_telemetry').appendChild(chartDiv);
+            document.getElementById('line_performance_charts').appendChild(chartDiv);
 
             Highcharts.chart(chartDiv, {
                 chart: {

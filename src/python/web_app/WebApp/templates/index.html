@@ -17,19 +17,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
                             <th scope="row">Kitty Hawk</th>
                             <td>1</td>
                             <td>W4</td>
                             <td>4</td>
                             </tr>
-                            <tr>
+                            <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
                             <th scope="row">Kitty Hawk</th>
                             <td>1</td>
                             <td>W3</td>
                             <td>4</td>
                             </tr>
-                            <tr>
+                            <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
                             <th scope="row">Kitty Hawk</th>
                             <td>1</td>
                             <td>W5</td>
@@ -160,19 +160,19 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
+                                        <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
                                         <th scope="row">0001</th>
                                         <td>1</td>
                                         <td>1.2</td>
                                         <td>Good</td>
                                         </tr>
-                                        <tr>
+                                        <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
                                         <th scope="row">0001</th>
                                         <td>1</td>
                                         <td>1.2</td>
                                         <td>Good</td>
                                         </tr>
-                                        <tr>
+                                        <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
                                         <th scope="row">0001</th>
                                         <td>1</td>
                                         <td>1.2</td>
@@ -188,6 +188,34 @@
                 </div>
     </div>
 </div>
+
+
+<!-- Widget Detail Modal -->
+<div class="modal fade bd-example-modal-lg" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalScrollableTitle">Widget Details</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><b>Widget Id: </b> W4</li>
+                <li class="list-group-item"><b>Factory Id: </b>Kitty Hawk</li>
+                <li class="list-group-item"><b>Line Id: </b>1</li>
+                <li class="list-group-item"><b>Classification: </b>Anomaly</li>
+                <li class="list-group-item"><b>Std Dist: </b>4</li>
+            </ul>
+            <div id="widget_telemetry"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block pagescripts %}
@@ -195,5 +223,7 @@
 	var test_endpoint =  "{{ url_for('security.test') }}";
 </script>
 
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='pagescripts/index.js') }}"></script>
 {% endblock %}

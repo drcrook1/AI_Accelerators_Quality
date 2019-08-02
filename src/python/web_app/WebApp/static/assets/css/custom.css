@@ -72,3 +72,14 @@ user-select: none;
   border: none;
   cursor: pointer;
 }
+
+.clickable {
+  cursor: pointer;
+}
+
+.chart {
+  min-width: 320px;
+  max-width: 800px;
+  height: 220px;
+  margin: 0 auto;
+}

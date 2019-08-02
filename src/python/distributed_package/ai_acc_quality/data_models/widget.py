@@ -59,7 +59,7 @@ class Widget(Base_Model):
     serial_number : str = None
     factory_id : str = None
     line_id : str = None
-    telemetry : List[Telemetry] = None
+    telemetry : List[Telemetry] = []
     classification : Widget_Classification = None
 
     def to_dict(self) -> Tuple[Result, Dict]:

@@ -7,6 +7,7 @@ from ai_acc_quality.data_models.base_model import Base_Model
 from ai_acc_quality.data_models.telemetry import Telemetry
 from typing import List, Tuple, Dict
 from datetime import datetime
+import dateutil.parser as parser
 import json
 
 class Widget_Classification(Base_Model):
@@ -34,6 +35,7 @@ class Widget_Classification(Base_Model):
         d["std"] = self.std
         d["mean"] = self.mean
         d["threshold"] = self.threshold
+        d["classified_time"] = self.classified_time.isoformat()
         return Result(True), d
 
     @classmethod
@@ -43,6 +45,7 @@ class Widget_Classification(Base_Model):
         c.std = data["std"]
         c.mean = data["mean"]
         c.threshold = data["threshold"]
+        c.classified_time = parser.parse(data["classified_time"])
         return c
 
     def to_json(self) -> str:

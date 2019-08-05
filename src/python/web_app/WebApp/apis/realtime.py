@@ -5,6 +5,7 @@ Copyright: Microsoft Corporation 2019
 from webapp.app import socketio
 from flask_socketio import send, emit
 from flask import Blueprint, request
+import json
 
 events = Blueprint("events", __name__)
 
@@ -16,8 +17,10 @@ def text(message):
 def livebadwidget():
     widget_json = request.get_json()
     socketio.emit("live_badwidget", widget_json)
+    return json.dumps({"success" : True})
 
 @events.route("/api/v1/live/goodwidget", methods=["POST"])
 def livegoodwidget():
     widget_json = request.get_json()
     socketio.emit("live_goodwidget", widget_json)
+    return json.dumps({"success" : True})

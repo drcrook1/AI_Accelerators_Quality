@@ -13,6 +13,7 @@ import pypyodbc
 from ai_acc_quality.data_models.telemetry import Telemetry
 from ai_acc_quality.data_models.widget import Widget, Widget_Classification
 from azure.storage.table import TableService
+import requests
 
 import ProcessTelemetry
 
@@ -24,7 +25,8 @@ class TestProcessTelemetry(object):
 
     @patch('pypyodbc.Connection')
     @patch('azure.storage.table.TableService')
-    def test_persist(self, mockConnection: pypyodbc.Connection, mockTableService: TableService):
+    @patch.object(requests, 'post')
+    def test_persist(self, mockPost, mockConnection: pypyodbc.Connection, mockTableService: TableService):
         """
         Tests to ensure the generator posts events to event hub
         """
@@ -33,12 +35,25 @@ class TestProcessTelemetry(object):
         input_event = func.EventHubEvent(body=input_widget.to_json().encode())
 
         ProcessTelemetry.connectTable = lambda : Mock(TableService)
+        ProcessTelemetry.webServerEndpoint = lambda : "http://example.com"
+
         output_json = ProcessTelemetry.main(input_event)
 
         output_widget = Widget.from_json(output_json)
 
         assert output_widget.serial_number == input_widget.serial_number
         assert output_widget.classification.std_dist > 0
+        mockPost.assert_called_once_with(
+            "http://example.com/api/v1/live/goodwidget",
+            data=Matcher(checkPost),
+            headers={'Content-type': 'application/json'},
+            )
+
+def checkPost(jsonData):
+    w = Widget.from_json(jsonData)
+    assert w.serial_number == "devserial1"
+    assert not w.telemetry
+    return True
 
 def generate_widget() -> Widget:
     w = Widget()
@@ -57,3 +72,9 @@ def generate_telemetry() -> Telemetry:
     t.flux_capacitance = random.random()
     t.time_stamp = datetime.utcnow()
     return t
+
+class Matcher:
+    def __init__(self, matcher):
+        self.matcher = matcher
+    def __eq__(self, arg):
+        return self.matcher(arg)

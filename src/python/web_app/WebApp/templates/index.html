@@ -16,24 +16,12 @@
                             <th scope="col">Distance</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody data-bind="foreach: feed_widgets">
                             <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
-                            <th scope="row">Kitty Hawk</th>
-                            <td>1</td>
-                            <td>W4</td>
-                            <td>4</td>
-                            </tr>
-                            <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
-                            <th scope="row">Kitty Hawk</th>
-                            <td>1</td>
-                            <td>W3</td>
-                            <td>4</td>
-                            </tr>
-                            <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
-                            <th scope="row">Kitty Hawk</th>
-                            <td>1</td>
-                            <td>W5</td>
-                            <td>4</td>
+                            <th scope="row" data-bind="text: factory_id"></th>
+                            <td data-bind="text: line_id"></td>
+                            <td data-bind="text: widget_id"></td>
+                            <td data-bind="text: distance"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -264,7 +252,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/data.js"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='pagescripts/index.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='pagescripts/widget_feed.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='pagescripts/lineperformance.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='pagescripts/widget_telemetry.js') }}"></script>
 

@@ -12,7 +12,7 @@ events = Blueprint("events", __name__)
 def text(message):
     print('received message: ' + str(message))
 
-@events.route("api/v1/live/badwidget", methods=["POST"])
+@events.route("/api/v1/live/badwidget", methods=["POST"])
 def livebadwidget():
     widget_json = request.get_json()
     socketio.emit("live_badwidget", widget_json)

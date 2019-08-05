@@ -246,21 +246,26 @@
 
 {% block pagescripts %}
 <script type="text/javascript">
-	var test_endpoint =  "{{ url_for('security.test') }}";
+    var bad_widgets_endpoint = "{{ url_for('widgets.badwidgets') }}";
+    var good_widgets_endpoint = "{{ url_for('widgets.goodwidgets') }}";
+    var page_good_widgets_endpoint = "{{ url_for('widgets.page_good') }}";
+    var page_bad_widgets_endpoint = "{{ url_for('widgets.page_bad') }}";
+    var page_all_widgets_endpoint = "{{ url_for('widgets.page_all') }}";
+    var specific_widget_endpoint = "{{ url_for('widgets.widget') }}";
+    var count_total_widgets_endpoint = "{{ url_for('widgets.count_total') }}";
+    var count_bad_widgets_endpoint = "{{ url_for('widgets.count_bad') }}";
+    var count_good_widgets_endpoint = "{{ url_for('widgets.count_good') }}";
+
+    var count_factories_endpoint = "{{ url_for('factories.count') }}";
+    var overview_factories_endpoint = "{{ url_for('factories.overview') }}";
+    var overview_lines_endpoint = "{{ url_for('factories.lines_overview') }}";
 </script>
 
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/data.js"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='pagescripts/index.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='pagescripts/lineperformance.js') }}"></script>
-
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
-<script type="text/javascript" charset="utf-8">
-    var socket = io();
-    socket.on('connect', function() {
-        socket.emit('text', {data: 'I\'m connected!'});
-    });
-</script>
+<script type="text/javascript" src="{{ url_for('static', filename='pagescripts/widget_telemetry.js') }}"></script>
 
 {% endblock %}

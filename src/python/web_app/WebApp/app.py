@@ -22,6 +22,9 @@ def create_app():
     from webapp.apis.realtime import events
     app.register_blueprint(events)
 
+    from webapp.apis.factories import factories
+    app.register_blueprint(factories)
+
     socketio.init_app(app)
 
     return app

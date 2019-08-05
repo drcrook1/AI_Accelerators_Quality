@@ -2,8 +2,10 @@
 Author: David Crook
 Copyright: Microsoft Corporation 2019
 """
-
+from flask_socketio import SocketIO
 from flask import Flask
+
+socketio = SocketIO()
 
 def create_app():
     app = Flask(__name__)
@@ -16,5 +18,13 @@ def create_app():
 
     from webapp.apis.widgets import widgets
     app.register_blueprint(widgets)
+
+    from webapp.apis.realtime import events
+    app.register_blueprint(events)
+
+    from webapp.apis.factories import factories
+    app.register_blueprint(factories)
+
+    socketio.init_app(app)
 
     return app

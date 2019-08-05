@@ -1,51 +1,271 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-
-<div class="starter-template">
-    <br>
-    <br>
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-            <th scope="col">Widget Serial #</th>
-            <th scope="col">Line #</th>
-            <th scope="col">Std from Normal</th>
-            <th scope="col">Good Or Bad</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-            <th scope="row">0001</th>
-            <td>1</td>
-            <td>1.2</td>
-            <td>Good</td>
-            </tr>
-            <tr>
-            <th scope="row">0001</th>
-            <td>1</td>
-            <td>1.2</td>
-            <td>Good</td>
-            </tr>
-            <tr>
-            <th scope="row">0001</th>
-            <td>1</td>
-            <td>1.2</td>
-            <td>Good</td>
-            </tr>
-        </tbody>
-    </table>
-          
+<div class="wrapper">
+    <div id="sidebar" class="active">
+        <div class="sidebar-header">
+            <h4>Widget Anomaly Feed</h4>
+        </div>
+        <div>
+                <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                            <th scope="col">Factory Id</th>
+                            <th scope="col">Line Id</th>
+                            <th scope="col">Widget Id</th>
+                            <th scope="col">Distance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
+                            <th scope="row">Kitty Hawk</th>
+                            <td>1</td>
+                            <td>W4</td>
+                            <td>4</td>
+                            </tr>
+                            <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
+                            <th scope="row">Kitty Hawk</th>
+                            <td>1</td>
+                            <td>W3</td>
+                            <td>4</td>
+                            </tr>
+                            <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
+                            <th scope="row">Kitty Hawk</th>
+                            <td>1</td>
+                            <td>W5</td>
+                            <td>4</td>
+                            </tr>
+                        </tbody>
+                    </table>
+        </div>
+    </div>
+    <div class="content">
+        <div class="alert alert-success" role="alert">
+            123,456 Widgets Within Threshold
+        </div>
+        <div class="alert alert-danger" role="alert">
+            1,234 Anomolous Widgets
+        </div>
+        <div class="alert alert-info" role="alert">
+            124,690 Total Widgets
+        </div>
+        <div class="accordion" id="accordionExample">
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                    <h4 class="mb-0">
+                        <div data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Factories Overview
+                        </button>
+                    </h4>
+                    </div>
+                
+                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <div>
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">Factory Id</th>
+                                    <th scope="col">Total Widgets</th>
+                                    <th scope="col">Total Anomalies</th>
+                                    <th scope="col">% Anomalies</th>
+                                    <th scope="col">4 Month Anomaly Trend</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    <th scope="row">Kitty Hawk</th>
+                                    <td>62,345</td>
+                                    <td>234</td>
+                                    <td>0.0037%</td>
+                                    <td>-5%</td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">Nags Head</th>
+                                    <td>62,345</td>
+                                    <td>1,000</td>
+                                    <td>0.0160%</td>
+                                    <td>+10.3%</td>
+                                    </tr>
+                                </tbody>
+                            </table>                                            
+                            </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingTwo">
+                    <h4 class="mb-0">
+                        <div data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Line Performance Descending
+                        </button>
+                    </h4>
+                    </div>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <div>
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">Factory Id</th>
+                                    <th scope="col">Line Id</th>
+                                    <th scope="col">% Anomalies</th>
+                                    <th scope="col">3 Week Deviation Trend</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    <th class="clickable" data-toggle="modal" data-target="#linePerformanceModal" scope="row">Kitty Hawk</th>
+                                    <td>1</td>
+                                    <td>0.1%</td>
+                                    <td>-0.25</td>
+                                    </tr>
+                                    <tr>
+                                    <th class="clickable" data-toggle="modal" data-target="#linePerformanceModal" scope="row">Nags Head</th>
+                                    <td>1</td>
+                                    <td>0.05%</td>
+                                    <td>-0.22</td>
+                                    </tr>
+                                    <tr>
+                                    <th class="clickable" data-toggle="modal" data-target="#linePerformanceModal" scope="row">Nags Head</th>
+                                    <td>2</td>
+                                    <td>0.045%</td>
+                                    <td>-0.17</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                                        
+                            </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingThree">
+                    <h4 class="mb-0">
+                        <div data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        All Widgets
+                        </button>
+                    </h4>
+                    </div>
+                    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <div>
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                        <th scope="col">Widget Serial #</th>
+                                        <th scope="col">Line #</th>
+                                        <th scope="col">Std from Normal</th>
+                                        <th scope="col">Good Or Bad</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
+                                        <th scope="row">0001</th>
+                                        <td>1</td>
+                                        <td>1.2</td>
+                                        <td>Good</td>
+                                        </tr>
+                                        <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
+                                        <th scope="row">0001</th>
+                                        <td>1</td>
+                                        <td>1.2</td>
+                                        <td>Good</td>
+                                        </tr>
+                                        <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
+                                        <th scope="row">0001</th>
+                                        <td>1</td>
+                                        <td>1.2</td>
+                                        <td>Good</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                        
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+    </div>
 </div>
-      
-      
+
+
+<!-- Widget Detail Modal -->
+<div class="modal fade bd-example-modal-lg" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalScrollableTitle">Widget Details</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><b>Widget Id: </b> W4</li>
+                <li class="list-group-item"><b>Factory Id: </b>Kitty Hawk</li>
+                <li class="list-group-item"><b>Line Id: </b>1</li>
+                <li class="list-group-item"><b>Classification: </b>Anomaly</li>
+                <li class="list-group-item"><b>Std Dist: </b>4</li>
+            </ul>
+            <div id="widget_telemetry"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+<!-- Line Performance Modal -->
+<div class="modal fade bd-example-modal-lg" id="linePerformanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalScrollableTitle">Line Performance Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><b>Factory Id: </b>Kitty Hawk</li>
+                    <li class="list-group-item"><b>Line Id: </b>1</li>
+                    <li class="list-group-item"><b>% Anomalies: </b>0.1%</li>
+                    <li class="list-group-item"><b>3 Week Trend: </b>-0.25</li>
+                </ul>
+                <div id="line_performance_charts"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block pagescripts %}
 <script type="text/javascript">
-	var test_endpoint =  "{{ url_for('security.test') }}";
+    var bad_widgets_endpoint = "{{ url_for('widgets.badwidgets') }}";
+    var good_widgets_endpoint = "{{ url_for('widgets.goodwidgets') }}";
+    var page_good_widgets_endpoint = "{{ url_for('widgets.page_good') }}";
+    var page_bad_widgets_endpoint = "{{ url_for('widgets.page_bad') }}";
+    var page_all_widgets_endpoint = "{{ url_for('widgets.page_all') }}";
+    var specific_widget_endpoint = "{{ url_for('widgets.widget') }}";
+    var count_total_widgets_endpoint = "{{ url_for('widgets.count_total') }}";
+    var count_bad_widgets_endpoint = "{{ url_for('widgets.count_bad') }}";
+    var count_good_widgets_endpoint = "{{ url_for('widgets.count_good') }}";
+
+    var count_factories_endpoint = "{{ url_for('factories.count') }}";
+    var overview_factories_endpoint = "{{ url_for('factories.overview') }}";
+    var overview_lines_endpoint = "{{ url_for('factories.lines_overview') }}";
 </script>
 
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='pagescripts/index.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='pagescripts/lineperformance.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='pagescripts/widget_telemetry.js') }}"></script>
+
 {% endblock %}

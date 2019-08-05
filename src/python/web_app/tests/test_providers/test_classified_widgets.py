@@ -3,7 +3,7 @@
 @Author: David Crook
 @Author-Email: DaCrook@Microsoft.com
 """
-from webapp.providers.classified_widget import get_widget, get_bad_widgets
+from webapp.providers.classified_widget import get_widget, get_bad_widgets, get_good_widgets_count, get_bad_widgets_count, get_all_widgets_count, get_counts
 from webapp.providers.connections import get_db_cxn
 
 class TestClassifiedWidgetsProvider(object):
@@ -37,3 +37,20 @@ class TestClassifiedWidgetsProvider(object):
         cnxn = get_db_cxn()
         bad_widgets = get_bad_widgets(cnxn, to_json=True)
         assert(type(bad_widgets) is str)
+
+    def test_count(self):
+        """
+        ensures we get a count back
+        """
+        cnxn = get_db_cxn()
+        good_count = get_good_widgets_count(cnxn)
+        bad_count = get_bad_widgets_count(cnxn)
+        all_count = get_all_widgets_count(cnxn)
+        assert(type(good_count) is int)
+        assert(type(bad_count) is int)
+        assert(type(all_count) is int)
+    
+    def test_count_to_json_str(self):
+        cnxn = get_db_cxn()
+        counts = get_counts(cnxn)
+        assert(type(counts) is str)

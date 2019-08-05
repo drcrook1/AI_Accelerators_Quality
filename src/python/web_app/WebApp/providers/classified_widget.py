@@ -31,10 +31,13 @@ def get_widget(db_cnxn, serial_number : str = None, db_id : str = None) -> Widge
         row = cursor.execute("select * from dbo.classified_widgets where id = {}".format("'" + db_id + "'")).fetchone()
     return widget_from_row(row)
 
-def get_all_widgets(db_cnxn) -> List[Widget]:
+def get_all_widgets(db_cnxn, where = None) -> List[Widget]:
     cursor = db_cnxn.cursor()
     widgets = []
-    for row in cursor.execute("select * from dbo.classified_widgets"):
+    sql = "select * from dbo.classified_widgets"
+    if(where is not None):
+        sql = sql + " " + where
+    for row in cursor.execute(sql):
         widgets.append(widget_from_row(row))
     return widgets
 
@@ -55,3 +58,28 @@ def get_bad_widgets(db_cnxn, to_json : bool = False) -> List[Widget]:
     if(to_json):
         return many_widgets_to_json(widgets)
     return widgets
+
+def get_good_widgets_count(db_cnxn) -> int:
+    cursor = db_cnxn.cursor()
+    sql = "SELECT COUNT(*) AS count from dbo.classified_widgets where is_good = 1"
+    row = cursor.execute(sql).fetchone()
+    return row.count
+
+def get_bad_widgets_count(db_cnxn) -> int:
+    cursor = db_cnxn.cursor()
+    sql = "SELECT COUNT(*) AS count from dbo.classified_widgets where is_good = 0"
+    row = cursor.execute(sql).fetchone()
+    return row.count
+
+def get_all_widgets_count(db_cnxn) -> int:
+    cursor = db_cnxn.cursor()
+    sql = "SELECT COUNT(*) AS count from dbo.classified_widgets"
+    row = cursor.execute(sql).fetchone()
+    return row.count
+
+def get_counts(db_cnxn) -> str:
+    good_count = get_good_widgets_count(db_cnxn)
+    bad_count = get_bad_widgets_count(db_cnxn)
+    all_count = get_all_widgets_count(db_cnxn)
+    res = {"good_count" : good_count, "bad_count" : bad_count, "all_count" : all_count}
+    return json.dumps(res)

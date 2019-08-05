@@ -28,14 +28,10 @@
         </div>
     </div>
     <div class="content">
-        <div class="alert alert-success" role="alert">
-            123,456 Widgets Within Threshold
-        </div>
-        <div class="alert alert-danger" role="alert">
-            1,234 Anomolous Widgets
-        </div>
-        <div class="alert alert-info" role="alert">
-            124,690 Total Widgets
+        <div id="overview">
+            <div class="alert alert-success" role="alert" data-bind="text: good_count"></div>
+            <div class="alert alert-danger" role="alert" data-bind="text: bad_count"></div>
+            <div class="alert alert-info" role="alert" data-bind="text: total_count"></div>
         </div>
         <div class="accordion" id="accordionExample">
                 <div class="card">
@@ -240,9 +236,7 @@
     var page_bad_widgets_endpoint = "{{ url_for('widgets.page_bad') }}";
     var page_all_widgets_endpoint = "{{ url_for('widgets.page_all') }}";
     var specific_widget_endpoint = "{{ url_for('widgets.widget') }}";
-    var count_total_widgets_endpoint = "{{ url_for('widgets.count_total') }}";
-    var count_bad_widgets_endpoint = "{{ url_for('widgets.count_bad') }}";
-    var count_good_widgets_endpoint = "{{ url_for('widgets.count_good') }}";
+    var counts_widgets_endpoint = "{{ url_for('widgets.counts') }}";
 
     var count_factories_endpoint = "{{ url_for('factories.count') }}";
     var overview_factories_endpoint = "{{ url_for('factories.overview') }}";
@@ -253,6 +247,7 @@
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/data.js"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='pagescripts/widget_feed.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='pagescripts/widget_overview.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='pagescripts/lineperformance.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='pagescripts/widget_telemetry.js') }}"></script>
 

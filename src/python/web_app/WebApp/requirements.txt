@@ -7,3 +7,5 @@ pyodbc
 ai_acc_quality
 flask_socketio
 eventlet
+pandas
+scipy

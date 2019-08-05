@@ -47,4 +47,5 @@ az functionapp config appsettings set --name $PROC_FUNCTION_APP_NAME \
       EventHubsConnectionString="$EVENTHUB_CS" \
       SqlDatabaseConnectionString="$SQL_CS" \
       TableStorageConnectionString="$TABLE_CS" \
+      SignalIOServerHttpEndpoint="https://dacrook-ai-quality-dev-webapp.azurewebsites.net" \
     -o tsv

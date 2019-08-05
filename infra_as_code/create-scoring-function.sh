@@ -14,7 +14,7 @@ SQL_SERVER_NAME=${SQL_SERVER_NAME:-${PREFIX}sql}
 SQL_DATABASE_NAME=${SQL_DATABASE_NAME:-${PREFIX}db}
 SQL_ADMIN_USER=${SQL_ADMIN_USER:-serveradmin}
 SQL_ADMIN_PASS=${SQL_ADMIN_PASS}
-STORAGE_TABLE_NAME=${STORAGE_TABLE_NAME:Predictions}
+STORAGE_TABLE_NAME=${STORAGE_TABLE_NAME:-Predictions}
 
 echo 'creating app service plan'
 echo ". name: $PROC_FUNCTION_PLAN_NAME"
@@ -37,7 +37,7 @@ az functionapp create -g $RESOURCE_GROUP -n $PROC_FUNCTION_APP_NAME \
 echo 'getting EventHubsConnectionString'
 EVENTHUB_CS=$(az eventhubs namespace authorization-rule keys list -g $RESOURCE_GROUP --namespace-name $EVENTHUB_NAMESPACE --name RootManageSharedAccessKey --query "primaryConnectionString" -o tsv)
 SQL_CS="Driver={ODBC Driver 17 for SQL Server};Server=tcp:$SQL_SERVER_NAME.database.windows.net;Database=$SQL_DATABASE_NAME;Uid=$SQL_ADMIN_USER;Pwd=$SQL_ADMIN_PASS;Encrypt=yes;TrustServerCertificate=no;"
-TABLE_CS=(az storage table generate-sas --account-name $AZURE_STORAGE_ACCOUNT --policy-name table-add -n $STORAGE_TABLE_NAME)
+TABLE_CS=$(az storage table generate-sas --account-name $AZURE_STORAGE_ACCOUNT --policy-name table-add -n $STORAGE_TABLE_NAME -o tsv)
 
 echo 'adding app settings for connection strings'
 

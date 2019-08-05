@@ -8,7 +8,7 @@ import json
 
 security = Blueprint("security", __name__)
 
-@security.route("/test")
+@security.route("api/v1/test")
 def test():
     result = {"something" : "some thing"}
     return json.dumps(result)

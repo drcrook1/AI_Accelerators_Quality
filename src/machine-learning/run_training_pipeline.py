@@ -18,7 +18,7 @@ parser.add_argument('--workspace', type=str, default=os.getenv('AML_WORKSPACE'),
 parser.add_argument('--experiment', type=str, default=os.getenv('AML_EXPERIMENT', 'ai_quality'), help='Azure ML experiment name')
 parser.add_argument('--storage_account', type=str, default=os.getenv('STORAGE_ACCOUNT'), help='Storage account name')
 parser.add_argument('--storage_container', type=str, default=os.getenv('STORAGE_CONTAINER', 'eventhubs'), help='Storage container name')
-parser.add_argument('--storage_sas', type=str, default=os.getenv('STORAGE_SAS'), help='Storage account SAS token')
+parser.add_argument('--storage_key', type=str, default=os.getenv('STORAGE_KEY'), help='Storage account key')
 parser.add_argument('--storage_path', type=str, default=os.getenv('STORAGE_PATH'), help='Path to Avro data in storage container')
 args = parser.parse_args()
 
@@ -44,11 +44,16 @@ except ComputeTargetException:
 
 cpu_cluster.wait_for_completion(show_output=True)
 
+old_datastore = [ds for ds in ws.datastores if ds=="telemetry"]
+if old_datastore:
+   old_ds = Datastore.get(ws, "telemetry")
+   old_ds.unregister()
+
 telemetry_ds = Datastore.register_azure_blob_container(workspace=ws, 
                                                     datastore_name='telemetry', 
                                                     container_name=args.storage_container,
                                                     account_name=args.storage_account,
-                                                    sas_token=args.storage_sas,
+                                                    account_key=args.storage_key,
                                                     )
 
 input_data = DataReference(

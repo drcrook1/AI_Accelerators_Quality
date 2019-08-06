@@ -1,5 +1,6 @@
-function create_widget_feed_item(f_id, l_id, w_id, d){
-    return {"factory_id" : f_id, "line_id" : l_id, "widget_id" : w_id, "distance" : d};
+function create_widget_feed_item(w_json){
+    return {"factory_id" : w_json["factory_id"], "line_id" : w_json["line_id"], 
+            "widget_id" : w_json["serial_number"], "distance" : w_json["classification"]["std_dist"]};
 }
 
 function add_feed_widget(vm, widget){
@@ -14,11 +15,7 @@ function feed_vm(){
 feedvm = new feed_vm();
 ko.applyBindings(feedvm, document.getElementById("sidebar"));
 
-add_feed_widget(feedvm, create_widget_feed_item("kitty hawk", "1", "W3", "1"))
-add_feed_widget(feedvm, create_widget_feed_item("kitty hawk", "1", "W3", "1"))
-add_feed_widget(feedvm, create_widget_feed_item("kitty hawk", "1", "W3", "1"))
-
 var socket = io();
 socket.on('live_badwidget', function(message) {
-    add_feed_widget(feedvm, message)
+    add_feed_widget(feedvm, create_widget_feed_item(message))
 });

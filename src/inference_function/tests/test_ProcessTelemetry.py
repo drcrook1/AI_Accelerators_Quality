@@ -6,7 +6,7 @@ import json
 import os
 import random
 from datetime import datetime
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, ANY
 
 import azure.functions as func
 import pypyodbc
@@ -25,17 +25,18 @@ class TestProcessTelemetry(object):
 
     @patch('pypyodbc.Connection')
     @patch('azure.storage.table.TableService')
-    @patch.object(requests, 'post')
-    def test_persist(self, mockPost, mockConnection: pypyodbc.Connection, mockTableService: TableService):
+    def test_persist(self, mockConnection: pypyodbc.Connection, mockTableService: TableService):
         """
         Tests to ensure the generator posts events to event hub
         """
 
         input_widget = generate_widget()
         input_event = func.EventHubEvent(body=input_widget.to_json().encode())
+        mockRequests = Mock(requests)
 
         ProcessTelemetry.connectTable = lambda : Mock(TableService)
         ProcessTelemetry.webServerEndpoint = lambda : "http://example.com"
+        ProcessTelemetry.requestsObj = lambda : mockRequests
 
         output_json = ProcessTelemetry.main(input_event)
 
@@ -43,11 +44,7 @@ class TestProcessTelemetry(object):
 
         assert output_widget.serial_number == input_widget.serial_number
         assert output_widget.classification.std_dist > 0
-        mockPost.assert_called_once_with(
-            "http://example.com/api/v1/live/goodwidget",
-            data=Matcher(checkPost),
-            headers={'Content-type': 'application/json'},
-            )
+        mockRequests.post.assert_called_once_with(ANY, data=ANY, headers=ANY)
 
 def checkPost(jsonData):
     w = Widget.from_json(jsonData)

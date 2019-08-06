@@ -28,10 +28,7 @@ class WidgetTableDAO:
         for sliceNumber in range(0, max(1, (len(w.telemetry) + self.maxTelemetriesPerRow - 1) // self.maxTelemetriesPerRow)):
             d["RowKey"] = str(int(w.classification.classified_time.replace(tzinfo=timezone.utc).timestamp())) +"-" + rowId + "-" + str(sliceNumber)
             d["telemetry"] = "[" + ", ".join([t.to_json() for t in w.telemetry[(sliceNumber * self.maxTelemetriesPerRow):((sliceNumber + 1) * self.maxTelemetriesPerRow)]]) + "]"
-            print(d)
 
             # Insert the entity into the table
             print('Inserting a new entity into table - ' + self.tableName)
-            print('Entity ' + str(d))
             self.tableService.insert_entity(self.tableName, d)
-            print('Successfully inserted the new entity')

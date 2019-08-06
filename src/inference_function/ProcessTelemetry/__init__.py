@@ -7,6 +7,7 @@ import pypyodbc
 import os
 from ProcessTelemetry.WidgetSqlDAO import WidgetSqlDAO
 from ProcessTelemetry.WidgetTableDAO import WidgetTableDAO
+from ProcessTelemetry.WidgetWebAppClient import WidgetWebAppClient
 import uuid
 import requests
 
@@ -26,6 +27,9 @@ def connectTable():
 def webServerEndpoint():
     return os.environ['SignalIOServerHttpEndpoint']
 
+def requestsObj():
+    return requests
+
 def main(event: func.EventHubEvent):
 
     w = Widget.from_json(event.get_body().decode('utf-8'))
@@ -35,6 +39,9 @@ def main(event: func.EventHubEvent):
     (result, good) = w.classification.is_good()
     assert result.success
     rowId = uuid.uuid4().hex
+
+    webapp_client = WidgetWebAppClient(requestsObj(), webServerEndpoint())
+    webapp_client.post(w)
 
     if not good:
         sqlDao = WidgetSqlDAO(connectODBC)
@@ -46,19 +53,6 @@ def main(event: func.EventHubEvent):
     tableDao.persistWidget(w, rowId)
 
     result = w.to_json()
-
-    # Warning: has side-effect to clear telemetry list, ust be last action in function
-    w.telemetry.clear()
-
-    endpoint = "goodwidget" if good else "badwidget"
-    headers = {'Content-type': 'application/json'}
-    endpoint_url = "{}/api/v1/live/{}".format(webServerEndpoint(), endpoint)
-    try:
-        r:requests.Response = requests.post(endpoint_url, data=w.to_json(), headers=headers)
-        r.raise_for_status()
-    except requests.exceptions.HTTPError as e:
-        logging.exception(e)
-
 
     logging.info('Python EventHub trigger processed an event: %s', result)
 

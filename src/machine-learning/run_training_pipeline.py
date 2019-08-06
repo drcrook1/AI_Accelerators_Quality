@@ -105,6 +105,7 @@ run.wait_for_completion(show_output=True)
 preprocessing_run = next(step for step in run.get_steps() if step.name=="Preprocessing_Train")
 pytorch_run = next(step for step in run.get_steps() if step.name=="PyTorch_Train")
 
+print("Registering models...")
 preprocessing_model = preprocessing_run.register_model(model_name='sklearn_preprocessing', model_path='outputs/preprocessing.joblib')
 print(preprocessing_model.name, preprocessing_model.id, preprocessing_model.version, sep='\t')
 

@@ -6,6 +6,7 @@ set -euo pipefail
 RESOURCE_GROUP=${RESOURCE_GROUP-${PREFIX}}
 AZURE_STORAGE_ACCOUNT=${AZURE_STORAGE_ACCOUNT:-${PREFIX}}
 EVENTHUB_NAMESPACE=${EVENTHUB_NAMESPACE:-${PREFIX}ehubs}
+WEB_APP_NAME=${WEB_APP_NAME:-${PREFIX}"web"}
 PROC_FUNCTION_PLAN_NAME=${PROC_FUNCTION_APP_NAME:-${PREFIX}"plan"}
 PROC_FUNCTION_APP_NAME=${PROC_FUNCTION_APP_NAME:-${PREFIX}"process"}
 PROC_FUNCTION_SKU=${PROC_FUNCTION_SKU:-S2}
@@ -37,7 +38,8 @@ az functionapp create -g $RESOURCE_GROUP -n $PROC_FUNCTION_APP_NAME \
 echo 'getting EventHubsConnectionString'
 EVENTHUB_CS=$(az eventhubs namespace authorization-rule keys list -g $RESOURCE_GROUP --namespace-name $EVENTHUB_NAMESPACE --name RootManageSharedAccessKey --query "primaryConnectionString" -o tsv)
 SQL_CS="Driver={ODBC Driver 17 for SQL Server};Server=tcp:$SQL_SERVER_NAME.database.windows.net;Database=$SQL_DATABASE_NAME;Uid=$SQL_ADMIN_USER;Pwd=$SQL_ADMIN_PASS;Encrypt=yes;TrustServerCertificate=no;"
-TABLE_CS="TableEndpoint=$(az storage account show -n $AZURE_STORAGE_ACCOUNT --query primaryEndpoints.table -o tsv);SharedAccessSignature=$(az storage table generate-sas --account-name $AZURE_STORAGE_ACCOUNT --policy-name table-add -n $STORAGE_TABLE_NAME -o tsv)"
+TABLE_CS="DefaultEndpointsProtocol=https;AccountName=$AZURE_STORAGE_ACCOUNT;AccountKey=$(az storage account keys list -g $RESOURCE_GROUP -n $AZURE_STORAGE_ACCOUNT -o tsv --query "[0].value");EndpointSuffix=core.windows.net"
+webapp_url="https://$(az webapp show -g $RESOURCE_GROUP -n $WEB_APP_NAME | jq -r .defaultHostName)"
 
 echo 'adding app settings for connection strings'
 
@@ -47,5 +49,5 @@ az functionapp config appsettings set --name $PROC_FUNCTION_APP_NAME \
       EventHubsConnectionString="$EVENTHUB_CS" \
       SqlDatabaseConnectionString="$SQL_CS" \
       TableStorageConnectionString="$TABLE_CS" \
-      SignalIOServerHttpEndpoint="https://dacrook-ai-quality-dev-webapp.azurewebsites.net" \
+      SignalIOServerHttpEndpoint="$webapp_url" \
     -o none

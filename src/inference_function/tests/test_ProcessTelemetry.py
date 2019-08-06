@@ -34,7 +34,8 @@ class TestProcessTelemetry(object):
         input_event = func.EventHubEvent(body=input_widget.to_json().encode())
         mockRequests = Mock(requests)
 
-        ProcessTelemetry.connectTable = lambda : Mock(TableService)
+        ProcessTelemetry.connectODBC = lambda : mockConnection
+        ProcessTelemetry.connectTable = lambda : mockTableService
         ProcessTelemetry.webServerEndpoint = lambda : "http://example.com"
         ProcessTelemetry.requestsObj = lambda : mockRequests
 

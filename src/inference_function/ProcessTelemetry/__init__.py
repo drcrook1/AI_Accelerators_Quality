@@ -43,10 +43,9 @@ def main(event: func.EventHubEvent):
     webapp_client = WidgetWebAppClient(requestsObj(), webServerEndpoint())
     webapp_client.post(w)
 
-    if not good:
-        sqlDao = WidgetSqlDAO(connectODBC)
-        sqlDao.persistWidget(w, rowId)
-        sqlDao.disconnect()
+    sqlDao = WidgetSqlDAO(connectODBC)
+    sqlDao.persistWidget(w, rowId)
+    sqlDao.disconnect()
 
     # Create a sample entity to insert into the table
     tableDao = WidgetTableDAO(connectTable(), "Predictions")

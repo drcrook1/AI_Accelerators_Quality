@@ -12,6 +12,10 @@ echo ". name: $AZURE_STORAGE_ACCOUNT"
 
 az storage account create -n $AZURE_STORAGE_ACCOUNT -g $RESOURCE_GROUP --sku Standard_LRS \
     -o tsv
+az storage container create --account-name $AZURE_STORAGE_ACCOUNT -n telemetry \
+    -o tsv
+az storage container policy create --account-name $AZURE_STORAGE_ACCOUNT -n telemetry-read -c telemetry --permissions lr \
+    -o tsv
 
 az storage table create --account-name $AZURE_STORAGE_ACCOUNT -n $STORAGE_TABLE_NAME \
     -o tsv

@@ -37,7 +37,7 @@ az functionapp create -g $RESOURCE_GROUP -n $PROC_FUNCTION_APP_NAME \
 echo 'getting EventHubsConnectionString'
 EVENTHUB_CS=$(az eventhubs namespace authorization-rule keys list -g $RESOURCE_GROUP --namespace-name $EVENTHUB_NAMESPACE --name RootManageSharedAccessKey --query "primaryConnectionString" -o tsv)
 SQL_CS="Driver={ODBC Driver 17 for SQL Server};Server=tcp:$SQL_SERVER_NAME.database.windows.net;Database=$SQL_DATABASE_NAME;Uid=$SQL_ADMIN_USER;Pwd=$SQL_ADMIN_PASS;Encrypt=yes;TrustServerCertificate=no;"
-TABLE_CS=$(az storage table generate-sas --account-name $AZURE_STORAGE_ACCOUNT --policy-name table-add -n $STORAGE_TABLE_NAME -o tsv)
+TABLE_CS="TableEndpoint=$(az storage account show -n $AZURE_STORAGE_ACCOUNT --query primaryEndpoints.table -o tsv);SharedAccessSignature=$(az storage table generate-sas --account-name $AZURE_STORAGE_ACCOUNT --policy-name table-add -n $STORAGE_TABLE_NAME -o tsv)"
 
 echo 'adding app settings for connection strings'
 

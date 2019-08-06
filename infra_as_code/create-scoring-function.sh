@@ -48,4 +48,4 @@ az functionapp config appsettings set --name $PROC_FUNCTION_APP_NAME \
       SqlDatabaseConnectionString="$SQL_CS" \
       TableStorageConnectionString="$TABLE_CS" \
       SignalIOServerHttpEndpoint="https://dacrook-ai-quality-dev-webapp.azurewebsites.net" \
-    -o tsv
+    -o none

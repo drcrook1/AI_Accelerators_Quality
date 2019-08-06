@@ -7,3 +7,4 @@ bash create-event-hub.sh
 bash create-sql-database.sh
 bash create-scoring-function.sh
 bash create-container-registry.sh
+bash create-web-app.sh

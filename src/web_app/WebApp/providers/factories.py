@@ -6,11 +6,7 @@ import webapp.providers.classified_widget as widgets
 import json
 import pandas as pd
 from scipy.stats import linregress
-
-def line_to_percent(slope, intercept, x):
-    y = intercept + slope * x
-    percent = ((y[-1] - y[0]) / y[0]) * 100
-    return float(percent)
+from webapp.providers.helpers import line_to_percent
 
 class FactoryOverview():
     factory_id = None

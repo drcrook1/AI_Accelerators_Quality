@@ -10,10 +10,6 @@ import json
 
 factories = Blueprint("factories", __name__)
 
-@factories.route("/api/v1/factories/count", methods=["GET"])
-def count():
-    raise NotImplementedError()
-
 @factories.route("/api/v1/factories/overview", methods=["GET"])
 def overview():
     f_ids = ["kitty hawk", "nags head"]

@@ -17,5 +17,12 @@ class TestLinesProvider(object):
         """
         cnxn = get_db_cxn()
         overview = lines.get_line_overviews(cnxn, "kitty hawk")
-        assert(type(overview) is dict)
+        assert(len(overview) > 0)
+    
+    def test_get_all_line_overviews(self):
+        cnxn = get_db_cxn()
+        f_ids = ["kitty hawk", "nags head"]
+        overviews = lines.get_all_overviews(cnxn, f_ids)
+        assert(len(overviews) > 0)
+
     

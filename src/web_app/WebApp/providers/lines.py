@@ -7,6 +7,7 @@ import json
 import pandas as pd
 from scipy.stats import linregress
 from webapp.providers.helpers import line_to_percent
+import math
 
 def get_anomaly_trend(line_data : pd.DataFrame) -> float:
     """
@@ -15,7 +16,10 @@ def get_anomaly_trend(line_data : pd.DataFrame) -> float:
     line_data = pd.DataFrame(line_data).sort_values("classified_time").reset_index(drop=True)
     line_data["time_linreg"] = line_data["classified_time"].map(lambda x: x.timestamp())
     slope, intercept, _, _, _ = linregress(line_data["time_linreg"].values, line_data["std_dist"])
-    return line_to_percent(slope, intercept, line_data["time_linreg"].values)
+    perc = line_to_percent(slope, intercept, line_data["time_linreg"].values)
+    if(math.isnan(perc)):
+        perc = 0
+    return perc
 
 def get_line_overviews(db_cnxn, factory_id):
     """
@@ -33,12 +37,28 @@ def get_line_overviews(db_cnxn, factory_id):
         data.append(res)
     data = pd.DataFrame(data)
     line_ids = data["line_id"].unique().tolist()
-    line_datas = {}
+    line_datas = []
     for line_id in line_ids:
-        line_datas[line_id] = {}
+        result = {}
         line_data = data[data["line_id"] == line_id]
-        line_datas[line_id]["good_count"] = line_data[line_data["is_good"] == True]["is_good"].shape[0]
-        line_datas[line_id]["bad_count"] = line_data[line_data["is_good"] == False]["is_good"].shape[0]
-        line_datas[line_id]["perc_anomalies"] = line_datas[line_id]["bad_count"] / (line_datas[line_id]["good_count"] + line_datas[line_id]["bad_count"])
-        line_datas[line_id]["anomaly_trend"] = get_anomaly_trend(line_data)
+        result["good_count"] = line_data[line_data["is_good"] == True]["is_good"].shape[0]
+        result["bad_count"] = line_data[line_data["is_good"] == False]["is_good"].shape[0]
+        result["perc_anomalies"] = result["bad_count"] / (result["good_count"] + result["bad_count"])
+        result["anomaly_trend"] = get_anomaly_trend(line_data)
+        result["line_id"] = line_id
+        line_datas.append(result)
     return line_datas
+
+def get_all_overviews(db_cnxn, factory_id_list, as_json = False):
+    """
+    creates a list of lists for all factories and lines in them.
+    """
+    overviews = []
+    for f_id in factory_id_list:
+        result = {}
+        result["factory_id"] = f_id
+        result["line_overviews"] = get_line_overviews(db_cnxn, f_id)
+        overviews.append(result)
+    if(as_json):
+        return json.dumps(overviews)
+    return overviews

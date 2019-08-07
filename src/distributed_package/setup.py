@@ -42,6 +42,9 @@ setup(
     packages=find_packages(exclude=["contrib", "docs", "tests"]),
     install_requires=[
           'python-dateutil',
+          'scikit-learn==0.21.3',
+          'torch==1.1.0.post2',
+          'joblib',
       ]
 )
 

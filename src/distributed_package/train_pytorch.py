@@ -1,35 +1,33 @@
+import argparse
+import copy
+import json
+import os
+import time
+
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.optim import lr_scheduler
 from torch.utils.data import DataLoader
-import os
-import copy
-import argparse
-import json
-import time
-import pandas as pd
 
-from model.autoencoder import AutoencoderModel
-
-from azureml.core.run import Run
-# get the Azure ML run object
-run = Run.get_context()
-
+from ai_acc_quality.ml.anomaly import score_anomaly_dl
+from ai_acc_quality.ml.anomaly import AutoencoderModel
 
 def load_data(data_dir, batch_size):
     """Load the train/val data."""
     
-    X_train = pd.read_pickle(data_dir + "/X_train.pkl.gz")
-    X_test = pd.read_pickle(data_dir + "/X_test.pkl.gz")
+    with np.load(data_dir + "/X.npz") as data:
+        X_train = data['X_train']
+        X_test = data['X_test']
 
-    X_train_dl = DataLoader(X_train.values, batch_size=batch_size, shuffle=True)
-    X_test_dl = DataLoader(X_test.values)
+        X_train_dl = DataLoader(X_train, batch_size=batch_size, shuffle=True)
+        X_test_dl = DataLoader(X_test)
 
-    dataloaders = {'train':X_train_dl, 'val':X_test_dl}
-    dataset_sizes = {'train':len(X_train), 'val':len(X_test)}
+        dataloaders = {'train':X_train_dl, 'val':X_test_dl}
+        dataset_sizes = {'train':len(X_train), 'val':len(X_test)}
 
-    return dataloaders, dataset_sizes
+        return dataloaders, dataset_sizes
 
 
 def train_model(model, criterion, optimizer, scheduler, args):
@@ -71,7 +69,6 @@ def train_model(model, criterion, optimizer, scheduler, args):
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
                     outputs = model(inputs)
-                    _, preds = torch.max(outputs, 1)
                     loss = criterion(outputs, inputs)
 
                     # backward + optimize only if in training phase
@@ -105,7 +102,12 @@ def train_model(model, criterion, optimizer, scheduler, args):
 
     # load best model weights
     model.load_state_dict(best_model_wts)
-    return model
+
+    val_losses = score_anomaly_dl(model, dataloaders['val'])
+    return (model, {
+        'mean': val_losses.mean(),
+        'stdev': val_losses.std(),
+        })
 
 
 def run_training(args):
@@ -133,10 +135,10 @@ def run_training(args):
     exp_lr_scheduler = lr_scheduler.StepLR(
         optimizer_ft, step_size=args.num_epochs/3, gamma=0.1)
 
-    model = train_model(model_ft, criterion, optimizer_ft,
+    model, val_stats = train_model(model_ft, criterion, optimizer_ft,
                         exp_lr_scheduler, args)
 
-    return model
+    return model, val_stats
 
 
 def main():
@@ -155,9 +157,13 @@ def main():
     args = parser.parse_args()
 
     print("data directory is: " + args.data_dir)
-    model = run_training(args)
+
+    model, val_stats = run_training(args)
+
     os.makedirs(args.output_dir, exist_ok=True)
     torch.save(model, os.path.join(args.output_dir, 'model.pt'))
+    with open(os.path.join(args.output_dir, "model_stats.json"), 'w') as stats:
+        json.dump(val_stats, stats)
     print('Model saved to {}'.format(args.output_dir))
 
 

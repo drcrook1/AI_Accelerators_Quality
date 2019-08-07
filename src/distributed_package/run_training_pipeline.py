@@ -1,6 +1,5 @@
 import argparse
 import os
-
 from azureml.core import Datastore, Experiment, Workspace
 from azureml.core.compute import AmlCompute, ComputeTarget
 from azureml.core.compute_target import ComputeTargetException
@@ -29,16 +28,26 @@ ws = Workspace(
     )
 
 # Choose a name for your CPU cluster
-cpu_cluster_name = "cpu1"
+cpu_cluster_name = "cpu3"
 
 # Verify that cluster does not exist already
 try:
     cpu_cluster = ComputeTarget(workspace=ws, name=cpu_cluster_name)
     print('Found existing cluster, use it.')
 except ComputeTargetException:
+    ssh_key = None
+    try:
+        with open(os.path.expanduser("~/.ssh/id_rsa.pub")) as fp:
+            ssh_key = fp.read()
+    except IOError:
+        pass
+
     compute_config = AmlCompute.provisioning_configuration(vm_size='STANDARD_D2_V2',
-                                                           min_nodes=0,
+                                                           min_nodes=1,
                                                            max_nodes=1,
+                                                           idle_seconds_before_scaledown=1200,
+                                                           admin_username=os.getenv('USER'),
+                                                           admin_user_ssh_key=ssh_key,
                                                            )
     cpu_cluster = ComputeTarget.create(ws, cpu_cluster_name, compute_config)
 
@@ -63,10 +72,9 @@ input_data = DataReference(
     )
 
 
-preprocessing_est = SKLearn(source_directory='010-preprocessing', 
+preprocessing_est = SKLearn(source_directory='.', 
                     compute_target=cpu_cluster,
-                    entry_script='dataprep.py',
-                    conda_packages=['pandas'],
+                    entry_script='train_dataprep.py',
                     pip_packages=['fastavro'],
                    )
 
@@ -81,9 +89,9 @@ preprocessing_step = EstimatorStep(name="Preprocessing_Train",
                          )
 
 
-pytorch_est = PyTorch(source_directory='020-ann', 
+pytorch_est = PyTorch(source_directory='.', 
                     compute_target=cpu_cluster,
-                    entry_script='pytorch_train.py',
+                    entry_script='train_pytorch.py',
                     use_gpu=False,
                     framework_version='1.1',
                     conda_packages=['pandas'],

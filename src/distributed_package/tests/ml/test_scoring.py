@@ -19,19 +19,15 @@ class TestScoring(object):
         Tests to ensure the generator posts events to event hub
         """
         w = generate_widget()
-        out = score("tests/ml/model_files/", w)
-        std_dist : float = None
-        std : float = None
-        mean : float = None
-        threshold : float = None
-        classified_time : datetime = None
+        before = datetime.utcnow()
+        c = score("tests/ml/model_files/", w)
+        after = datetime.utcnow()
 
-        assert out['score'] > 4.92 and out['score'] < 4.93
-        assert 4.92 < out['score'] < 4.93
-        assert 8.55 < out['std_dist'] < 8.56
-        assert 0.45 < out['std'] < 0.46
-        assert 1.05 < out['mean'] < 1.06
-        assert 2.41 < out['threshold'] < 2.42
+        assert 8.55 < c.std_dist < 8.56
+        assert 0.45 < c.std < 0.46
+        assert 1.05 < c.mean < 1.06
+        assert c.threshold == 3
+        assert before < c.classified_time < after
 
 
 def generate_widget() -> Widget:

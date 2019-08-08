@@ -1,7 +1,8 @@
-from setuptools import setup, find_packages
 import io
 import os
 import sys
+
+from setuptools import find_packages, setup
 
 NAME = "ai_acc_quality"
 AUTHOR = "Microsoft Corporation"
@@ -30,18 +31,22 @@ except FileNotFoundError:
     long_description = DESCRIPTION
 
 setup(
-    name = NAME,
-    version = version,
-    author = AUTHOR,
-    author_email = AUTHOR_EMAIL,
-    description = DESCRIPTION,
-    long_description = long_description,
-    long_description_content_type = "text/markdown",
+    name=NAME,
+    version=version,
+    author=AUTHOR,
+    author_email=AUTHOR_EMAIL,
+    description=DESCRIPTION,
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     packages=find_packages(exclude=["contrib", "docs", "tests"]),
     install_requires=[
-          'python-dateutil',
-          'scikit-learn==0.20.3',
-          'torch==1.1.0',
-          'joblib',
-      ]
+        'python-dateutil',
+    ],
+    extras_require={
+        'ml':  [
+            'scikit-learn==0.20.3',
+            'torch==1.1.0',
+            'joblib',
+        ],
+    },
 )

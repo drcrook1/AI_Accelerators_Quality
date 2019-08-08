@@ -41,10 +41,7 @@ setup(
     install_requires=[
           'python-dateutil',
           'scikit-learn==0.20.3',
-          'torch==1.1.0',
+          'torch==1.1.0.post2',
           'joblib',
       ]
 )
-
-
-

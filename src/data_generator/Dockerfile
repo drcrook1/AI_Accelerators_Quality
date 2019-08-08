@@ -4,9 +4,6 @@ FROM python:3.6.8-alpine3.9 AS base
 ################################################################################
 FROM base AS build
 
-#Passing secret into a stage that is not the last stage in a multi-stage pipeline is safe
-ARG PACKAGE_REPO
-
 RUN apk add build-base zeromq-dev
 
 RUN python -m venv /venv
@@ -14,6 +11,9 @@ RUN python -m venv /venv
 RUN python -m pip install --upgrade pip
 
 ADD requirements.txt .
+
+#Passing secret into a stage that is not the last stage in a multi-stage pipeline is safe
+ARG PACKAGE_REPO
 
 RUN /venv/bin/pip install --extra-index-url="${PACKAGE_REPO}" -r requirements.txt
 

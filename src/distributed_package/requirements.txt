@@ -1,4 +1,4 @@
 #Requirements from setup.py
-.
+.[ml]
 azureml-sdk>=1.0.55
 fastavro

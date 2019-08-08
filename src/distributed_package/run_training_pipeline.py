@@ -74,7 +74,7 @@ input_data = DataReference(
     )
 
 
-preprocessing_est = SKLearn(source_directory='.', 
+preprocessing_est = SKLearn(source_directory='src', 
                     compute_target=cpu_cluster,
                     entry_script='train_dataprep.py',
                     pip_packages=['fastavro'],
@@ -92,7 +92,7 @@ preprocessing_step = EstimatorStep(name="Preprocessing_Train",
                          )
 
 
-pytorch_est = PyTorch(source_directory='.', 
+pytorch_est = PyTorch(source_directory='src', 
                     compute_target=cpu_cluster,
                     entry_script='train_pytorch.py',
                     use_gpu=False,

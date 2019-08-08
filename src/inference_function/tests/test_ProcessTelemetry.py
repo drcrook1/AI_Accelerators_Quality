@@ -5,17 +5,18 @@ Handle: https://github.com/algattik
 import json
 import os
 import random
-from datetime import datetime
-from unittest.mock import Mock, patch, ANY
+from datetime import datetime, timezone
+from unittest.mock import ANY, Mock, patch
 
 import azure.functions as func
 import pypyodbc
-from ai_acc_quality.data_models.telemetry import Telemetry
-from ai_acc_quality.data_models.widget import Widget, Widget_Classification
-from azure.storage.table import TableService
 import requests
+from azure.storage.table import TableService
 
 import ProcessTelemetry
+from ai_acc_quality.data_models.telemetry import Telemetry
+from ai_acc_quality.data_models.widget import Widget, Widget_Classification
+from ProcessTelemetry.MLModelClient import MLModelClient
 
 
 class TestProcessTelemetry(object):
@@ -34,10 +35,14 @@ class TestProcessTelemetry(object):
         input_event = func.EventHubEvent(body=input_widget.to_json().encode())
         mockRequests = Mock(requests)
 
-        ProcessTelemetry.connectODBC = lambda : mockConnection
-        ProcessTelemetry.connectTable = lambda : mockTableService
-        ProcessTelemetry.webServerEndpoint = lambda : "http://example.com"
-        ProcessTelemetry.requestsObj = lambda : mockRequests
+        mockMLClient = Mock(MLModelClient)
+        mockMLClient.classify_widget.return_value = generate_classification()
+
+        ProcessTelemetry.connectODBC = lambda: mockConnection
+        ProcessTelemetry.connectTable = lambda: mockTableService
+        ProcessTelemetry.webServerEndpoint = lambda: "http://example.com"
+        ProcessTelemetry.requestsObj = lambda: mockRequests
+        ProcessTelemetry.modelClient = lambda: mockMLClient
 
         output_json = ProcessTelemetry.main(input_event)
 
@@ -47,11 +52,13 @@ class TestProcessTelemetry(object):
         assert output_widget.classification.std_dist > 0
         mockRequests.post.assert_called_once_with(ANY, data=ANY, headers=ANY)
 
+
 def checkPost(jsonData):
     w = Widget.from_json(jsonData)
     assert w.serial_number == "devserial1"
     assert not w.telemetry
     return True
+
 
 def generate_widget() -> Widget:
     w = Widget()
@@ -60,6 +67,7 @@ def generate_widget() -> Widget:
     w.line_id = "1"
     w.telemetry = [generate_telemetry() for i in range(0, 202)]
     return w
+
 
 def generate_telemetry() -> Telemetry:
     t = Telemetry()
@@ -71,8 +79,13 @@ def generate_telemetry() -> Telemetry:
     t.time_stamp = datetime.utcnow()
     return t
 
-class Matcher:
-    def __init__(self, matcher):
-        self.matcher = matcher
-    def __eq__(self, arg):
-        return self.matcher(arg)
+
+def generate_classification() -> Widget_Classification:
+    classification = Widget_Classification()
+    classification.classified_time = datetime.fromtimestamp(
+        1000000000, timezone.utc)
+    classification.mean = 1.0
+    classification.std = 2.0
+    classification.std_dist = 1.0
+    classification.threshold = 0.5
+    return classification

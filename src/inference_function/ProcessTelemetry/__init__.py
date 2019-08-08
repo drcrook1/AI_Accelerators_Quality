@@ -8,6 +8,7 @@ import os
 from ProcessTelemetry.WidgetSqlDAO import WidgetSqlDAO
 from ProcessTelemetry.WidgetTableDAO import WidgetTableDAO
 from ProcessTelemetry.WidgetWebAppClient import WidgetWebAppClient
+from ProcessTelemetry.MLModelClient import MLModelClient
 import uuid
 import requests
 
@@ -30,11 +31,14 @@ def webServerEndpoint():
 def requestsObj():
     return requests
 
+def modelClient() -> MLModelClient:
+    return MLModelClient()
+
 def main(event: func.EventHubEvent):
 
     w = Widget.from_json(event.get_body().decode('utf-8'))
 
-    w.classification = classify_widget(w)
+    w.classification = modelClient().classify_widget(w)
 
     (result, good) = w.classification.is_good()
     assert result.success
@@ -56,12 +60,3 @@ def main(event: func.EventHubEvent):
     logging.info('Python EventHub trigger processed an event: %s', result)
 
     return result
-
-def classify_widget(w:Widget):
-    c = Widget_Classification()
-    c.classified_time = datetime.utcnow()
-    c.mean = random.randrange(1, 100)
-    c.std = random.randrange(1, 2)
-    c.std_dist = random.randrange(1, 3)
-    c.threshold = random.randrange(1, 100)
-    return c

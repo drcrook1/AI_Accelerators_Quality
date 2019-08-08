@@ -13,8 +13,7 @@ os.environ["EVENTHUB_NAMESPACE"] = "myns"
 os.environ["EVENTHUB_NAME"] = "myeh"
 os.environ["EVENTHUB_KEY"] = "mykey"
 
-import locustfile
-from locustfile import DeviceSimulator
+from data_generator.locustfile import DeviceSimulator
 
 
 class TestSimulator(object):

@@ -24,7 +24,7 @@ RUN apk --no-cache add zeromq
 
 COPY --from=build /venv /venv
 
-ADD data_generator/locustfile.py /app/
+ADD data_generator /app/data_generator
 
 ################################################################################
 FROM runtime AS test
@@ -33,12 +33,12 @@ RUN /venv/bin/pip install pytest pytest-cov
 
 ADD tests /app/tests
 
-RUN cd /app && /venv/bin/python -m pytest --doctest-modules --junitxml=./tests/junit/test-results.xml --cov=./data_generator ./tests/ --cov-report=xml:./tests/junit/coverage.xml --cov-report=html:./tests/junit/cov_html
+RUN cd /app && /venv/bin/python -m pytest --doctest-modules --junitxml=./tests/junit/test-results.xml --cov=data_generator ./tests/ --cov-report=xml:./tests/junit/coverage.xml --cov-report=html:./tests/junit/cov_html
 
 ################################################################################
 FROM runtime AS production
 
 EXPOSE 8089 5557 5558
 
-WORKDIR /app
+WORKDIR /app/data_generator
 ENTRYPOINT ["/venv/bin/locust"]

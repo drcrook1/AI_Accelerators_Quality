@@ -8,11 +8,13 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from ai_acc_quality.ml.anomaly import AutoencoderModel, score_anomaly_dl
+from azureml.core.run import Run
 from torch.optim import lr_scheduler
 from torch.utils.data import DataLoader
 
-from ai_acc_quality.ml.anomaly import score_anomaly_dl
-from ai_acc_quality.ml.anomaly import AutoencoderModel
+# get the Azure ML run object
+run = Run.get_context()
 
 def load_data(data_dir, batch_size):
     """Load the train/val data."""

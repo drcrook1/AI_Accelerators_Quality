@@ -9,7 +9,7 @@ AUTHOR_EMAIL = "dacrook@microsoft.com"
 DESCRIPTION = "DO LATER"
 PROJECT_URL = "PRIVATE"
 LICENSE = "Restricted"
-version = None
+version = "0.0.0"
 
 if sys.version_info <= (3, 0):
     sys.stdout.write("Sorry, requires Python 3.x, not Python 2.x\n")
@@ -19,9 +19,7 @@ if("--version" in sys.argv):
     idx = sys.argv.index("--version")
     arg_name = sys.argv.pop(idx)
     version = sys.argv.pop(idx)
-    print(version)
-else:
-    raise Exception("MUST SUPPLY VERSION NUMBER")
+print(version)
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -42,8 +40,8 @@ setup(
     packages=find_packages(exclude=["contrib", "docs", "tests"]),
     install_requires=[
           'python-dateutil',
-          'scikit-learn==0.21.3',
-          'torch==1.1.0.post2',
+          'scikit-learn==0.20.3',
+          'torch==1.1.0',
           'joblib',
       ]
 )

@@ -1,5 +1,6 @@
 import argparse
 import os
+
 from azureml.core import Datastore, Experiment, Workspace
 from azureml.core.compute import AmlCompute, ComputeTarget
 from azureml.core.compute_target import ComputeTargetException
@@ -8,17 +9,18 @@ from azureml.pipeline.core import Pipeline, PipelineData
 from azureml.pipeline.steps import EstimatorStep
 from azureml.train.dnn import PyTorch
 from azureml.train.sklearn import SKLearn
+import sklearn
 
 # get command-line arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('--subscription_id', type=str, default=os.getenv('SUBSCRIPTION_ID'), help='subscription ID')
-parser.add_argument('--resource_group', type=str, default=os.getenv('RESOURCE_GROUP'), help='resource group')
-parser.add_argument('--workspace', type=str, default=os.getenv('AML_WORKSPACE'), help='Azure ML workspace name')
-parser.add_argument('--experiment', type=str, default=os.getenv('AML_EXPERIMENT', 'ai_quality'), help='Azure ML experiment name')
-parser.add_argument('--storage_account', type=str, default=os.getenv('STORAGE_ACCOUNT'), help='Storage account name')
-parser.add_argument('--storage_container', type=str, default=os.getenv('STORAGE_CONTAINER', 'eventhubs'), help='Storage container name')
-parser.add_argument('--storage_key', type=str, default=os.getenv('STORAGE_KEY'), help='Storage account key')
-parser.add_argument('--storage_path', type=str, default=os.getenv('STORAGE_PATH'), help='Path to Avro data in storage container')
+parser.add_argument('--subscription_id', type=str, required=True, help='subscription ID')
+parser.add_argument('--resource_group', type=str, required=True, help='resource group')
+parser.add_argument('--workspace', type=str, required=True, help='Azure ML workspace name')
+parser.add_argument('--experiment', type=str, default='ai_quality', help='Azure ML experiment name')
+parser.add_argument('--storage_account', type=str, required=True, help='Storage account name')
+parser.add_argument('--storage_container', type=str, default='eventhubs', help='Storage container name')
+parser.add_argument('--storage_key', type=str, required=True, help='Storage account key')
+parser.add_argument('--storage_path', type=str, required=True, help='Path to Avro data in storage container')
 args = parser.parse_args()
 
 ws = Workspace(
@@ -28,7 +30,7 @@ ws = Workspace(
     )
 
 # Choose a name for your CPU cluster
-cpu_cluster_name = "cpu3"
+cpu_cluster_name = "cpu4"
 
 # Verify that cluster does not exist already
 try:
@@ -43,8 +45,8 @@ except ComputeTargetException:
         pass
 
     compute_config = AmlCompute.provisioning_configuration(vm_size='STANDARD_D2_V2',
-                                                           min_nodes=1,
-                                                           max_nodes=1,
+                                                           min_nodes=0,
+                                                           max_nodes=3,
                                                            idle_seconds_before_scaledown=1200,
                                                            admin_username=os.getenv('USER'),
                                                            admin_user_ssh_key=ssh_key,
@@ -76,6 +78,7 @@ preprocessing_est = SKLearn(source_directory='.',
                     compute_target=cpu_cluster,
                     entry_script='train_dataprep.py',
                     pip_packages=['fastavro'],
+                    framework_version=sklearn.__version__,
                    )
 
 output = PipelineData("output", datastore=telemetry_ds)
@@ -94,7 +97,6 @@ pytorch_est = PyTorch(source_directory='.',
                     entry_script='train_pytorch.py',
                     use_gpu=False,
                     framework_version='1.1',
-                    conda_packages=['pandas'],
                     )
 
 pytorch_step = EstimatorStep(name="PyTorch_Train", 

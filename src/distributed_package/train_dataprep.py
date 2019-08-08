@@ -5,14 +5,13 @@ import json
 import os
 
 import fastavro
+import joblib
 import numpy as np
-from joblib import dump
+from ai_acc_quality.data_models.widget import Widget
+from ai_acc_quality.ml.preprocessing import widget_to_input
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
-
-from ai_acc_quality.ml.preprocessing import widget_to_input
-from ai_acc_quality.data_models.widget import Widget
 
 
 def extract_row(rec):
@@ -48,7 +47,7 @@ def dataprep(args):
 
     print("Writing outputs to {}".format(args.output_model_dir))
     np.savez_compressed(args.output_data_dir + "/X.npz", X_train=X_train, X_test=X_test)
-    dump(preprocessing, args.output_model_dir + '/preprocessing.joblib') 
+    joblib.dump(preprocessing, args.output_model_dir + '/preprocessing.joblib') 
     print("Completed writing outputs")
 
 

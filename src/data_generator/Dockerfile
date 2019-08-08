@@ -15,7 +15,7 @@ RUN python -m pip install --upgrade pip
 
 ADD requirements.txt .
 
-RUN /venv/bin/pip install --extra-index-url=${PACKAGE_REPO} -r requirements.txt
+RUN /venv/bin/pip install --extra-index-url="${PACKAGE_REPO}" -r requirements.txt
 
 ################################################################################
 FROM base AS runtime

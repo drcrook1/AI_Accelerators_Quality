@@ -23,6 +23,7 @@ class TestScoring(object):
         c = score("tests/ml/model_files/", w)
         after = datetime.utcnow()
 
+        assert isinstance(c.std_dist, float)
         assert 8.55 < c.std_dist < 8.56
         assert 0.45 < c.std < 0.46
         assert 1.05 < c.mean < 1.06

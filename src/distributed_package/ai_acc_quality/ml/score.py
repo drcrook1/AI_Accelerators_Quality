@@ -24,6 +24,6 @@ def score(modelPath:str, widget:Widget) -> Widget_Classification:
     c.classified_time = datetime.utcnow()
     c.mean = mean
     c.std = stdev
-    c.std_dist = ((output2 - mean) / stdev)
+    c.std_dist = (output2.item() - mean) / stdev
     c.threshold = 3
     return c

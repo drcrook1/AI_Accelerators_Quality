@@ -121,3 +121,6 @@ print(preprocessing_model.name, preprocessing_model.id, preprocessing_model.vers
 
 pytorch_model = pytorch_run.register_model(model_name='autoencoder', model_path='outputs/model.pt')
 print(pytorch_model.name, pytorch_model.id, pytorch_model.version, sep='\t')
+
+model_stats = pytorch_run.register_model(model_name='autoencoder_stats', model_path='outputs/model_stats.json')
+print(model_stats.name, model_stats.id, model_stats.version, sep='\t')

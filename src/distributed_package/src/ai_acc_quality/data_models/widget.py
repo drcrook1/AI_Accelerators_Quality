@@ -36,6 +36,7 @@ class Widget_Classification(Base_Model):
         d["mean"] = self.mean
         d["threshold"] = self.threshold
         d["classified_time"] = self.classified_time.isoformat()
+        _, d["is_good"] = self.is_good()
         return Result(True), d
 
     @classmethod

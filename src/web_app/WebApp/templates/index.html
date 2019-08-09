@@ -119,6 +119,7 @@
                                     <thead>
                                         <tr>
                                         <th scope="col">Widget Serial #</th>
+                                        <th scope="col">Factory Id</th>
                                         <th scope="col">Line #</th>
                                         <th scope="col">Std from Normal</th>
                                         <th scope="col">Good Or Bad</th>
@@ -127,9 +128,10 @@
                                     <tbody data-bind="foreach: widgets">
                                         <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
                                         <th data-bind="text: serial_number" scope="row">LOADING...</th>
+                                        <th data-bind="text: factory_id" scope="row">LOADING...</th>
                                         <td data-bind="text: line_id">LOADING...</td>
-                                        <td data-bind="text: std_dist">LOADING...</td>
-                                        <td data-bind="text: is_good">LOADING...</td>
+                                        <td data-bind="text: classification.std_dist">LOADING...</td>
+                                        <td data-bind="text: classification.is_good">LOADING...</td>
                                         </tr>
                                     </tbody>
                                 </table>

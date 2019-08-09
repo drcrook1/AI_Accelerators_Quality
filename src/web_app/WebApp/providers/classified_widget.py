@@ -9,7 +9,6 @@ import json
 def widget_from_row(row) -> Widget:
     w_class = Widget_Classification()
     w_class.classified_time = row.classified_time
-    w_class.is_good = row.is_good
     w_class.threshold = row.threshold
     w_class.mean = row.mean
     w_class.std = row.std

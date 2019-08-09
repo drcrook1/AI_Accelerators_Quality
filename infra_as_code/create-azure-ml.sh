@@ -11,6 +11,9 @@ AML_KEYVAULT=${AML_KEYVAULT:-${PREFIX}azml}
 AML_APPINSIGHTS=${AML_APPINSIGHTS:-${PREFIX}azml}
 AML_REGISTRY=${AML_REGISTRY:-${PREFIX}azml}
 
+echo 'installing AZ CLI ML extension if required'
+az extension show  -n azure-cli-ml -o none || az extension add -n azure-cli-ml
+
 echo 'creating storage account'
 echo ". name: $AML_STORAGE"
 

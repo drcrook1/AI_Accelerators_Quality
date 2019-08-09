@@ -7,4 +7,5 @@ bash create-storage-account.sh
 bash create-event-hub.sh
 bash create-sql-database.sh
 bash create-web-app.sh
+bash create-azure-ml.sh
 bash create-scoring-function.sh

@@ -42,8 +42,7 @@ def main(event: func.EventHubEvent):
 
     w.classification = connectModel().classify_widget(w)
 
-    (result, good) = w.classification.is_good()
-    assert result.success
+    good = w.classification.is_good()
     rowId = uuid.uuid4().hex
 
     webapp_client = WidgetWebAppClient(requestsObj(), webServerEndpoint())

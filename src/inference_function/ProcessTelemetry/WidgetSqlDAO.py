@@ -30,7 +30,7 @@ class WidgetSqlDAO:
 VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
         values = (
             w.serial_number, c.std_dist, c.std, c.mean,
-            c.threshold, c.is_good()[1], id,
+            c.threshold, c.is_good(), id,
             w.factory_id, w.line_id, c.classified_time.isoformat(),)
         cur.execute(query, values)
         cur.commit()

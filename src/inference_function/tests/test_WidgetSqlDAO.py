@@ -31,7 +31,7 @@ class TestWidgetSqlDAO(object):
         c = w.classification
         mockConnection.cursor().execute.assert_called_once_with(ANY,
             (w.serial_number, c.std_dist, c.std, c.mean,
-            c.threshold, c.is_good()[1], "myid",
+            c.threshold, c.is_good(), "myid",
             w.factory_id, w.line_id, c.classified_time.isoformat(),))
 
 def generate_classification() -> Widget_Classification:

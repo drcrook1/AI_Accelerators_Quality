@@ -24,7 +24,7 @@ class TestProcessTelemetry(object):
     Test Suite against event ProcessTelemetry
     """
 
-    @patch('pypyodbc.Connection')
+    @patch('pyodbc.Connection')
     @patch('azure.storage.table.TableService')
     def test_persist(self, mockConnection: pyodbc.Connection, mockTableService: TableService):
         """

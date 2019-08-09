@@ -42,7 +42,11 @@ az functionapp identity assign -g $RESOURCE_GROUP -n $PROC_FUNCTION_APP_NAME \
 
 echo 'Granting MSI permission on Azure ML workspace'
 msi_id=$(az functionapp identity show -g $RESOURCE_GROUP -n $PROC_FUNCTION_APP_NAME --query principalId -o tsv)
-az ml workspace share -g $RESOURCE_GROUP -w $AML_WORKSPACE --role Reader --user "$msi_id"
+ws_id=$(az ml workspace show -g $RESOURCE_GROUP -w $AML_WORKSPACE --query id -o tsv)
+existing_assignment=$(az role assignment list --scope "$ws_id" --assignee "$msi_id")
+if test -z "$existing_assignment"; then
+  az ml workspace share -g $RESOURCE_GROUP -w $AML_WORKSPACE --role Reader --user "$msi_id"
+fi
 
 echo 'getting connection strings'
 eventhubs_cs=$(az eventhubs namespace authorization-rule keys list -g $RESOURCE_GROUP --namespace-name $EVENTHUB_NAMESPACE --name RootManageSharedAccessKey --query "primaryConnectionString" -o tsv)

@@ -47,20 +47,11 @@ try:
     cpu_cluster = ComputeTarget(workspace=ws, name=cpu_cluster_name)
     print('Found existing cluster, use it.')
 except ComputeTargetException:
-    ssh_key = None
-    try:
-        with open(os.path.expanduser("~/.ssh/id_rsa.pub")) as fp:
-            ssh_key = fp.read()
-    except IOError:
-        pass
-
     compute_config = AmlCompute.provisioning_configuration(
         vm_size='STANDARD_D2_V2',
         min_nodes=0,
         max_nodes=3,
         idle_seconds_before_scaledown=1200,
-        admin_username=os.getenv('USER'),
-        admin_user_ssh_key=ssh_key,
     )
     cpu_cluster = ComputeTarget.create(ws, cpu_cluster_name, compute_config)
 

@@ -37,9 +37,9 @@ class TestWidgetTableDAO(object):
 
         assert len(persisted_entities) == 3
         assert persisted_entities[0]['PartitionKey'] == 'kitty hawk:1'
-        assert persisted_entities[0]['RowKey'] == '1000000000-myid-0'
-        assert persisted_entities[1]['RowKey'] == '1000000000-myid-1'
-        assert persisted_entities[2]['RowKey'] == '1000000000-myid-2'
+        assert persisted_entities[0]['RowKey'] == 'kitty hawk-myid-0'
+        assert persisted_entities[1]['RowKey'] == 'kitty hawk-myid-1'
+        assert persisted_entities[2]['RowKey'] == 'kitty hawk-myid-2'
         assert persisted_entities[0]['row_id'] == 'myid'
         assert persisted_entities[0]['serial_number'] == 'devserial1'
         assert persisted_entities[0]['factory_id'] == 'kitty hawk'

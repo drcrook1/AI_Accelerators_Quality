@@ -62,3 +62,5 @@ class TestClassifiedWidgetsProvider(object):
         assert(type(widgets) is str)
         
     def test_get_telemetry(self):
+        tbl_cnxn = get_tbl_cnxn()
+        telemetry = cwidget.get_widget_telemetry(tbl_cnxn, )

@@ -7,7 +7,7 @@ import os
 from ProcessTelemetry.WidgetSqlDAO import WidgetSqlDAO
 from unittest.mock import Mock, ANY
 from datetime import datetime
-import pypyodbc
+import pyodbc
 
 from ai_acc_quality.data_models.telemetry import Telemetry
 from ai_acc_quality.data_models.widget import Widget, Widget_Classification
@@ -18,8 +18,8 @@ class TestWidgetSqlDAO(object):
     """
 
     from unittest.mock import patch
-    @patch('pypyodbc.Connection')
-    def test_persist(self, mockConnection: pypyodbc.Connection):
+    @patch('pyodbc.Connection')
+    def test_persist(self, mockConnection: pyodbc.Connection):
         """
         Tests to ensure the generator posts events to event hub
         """

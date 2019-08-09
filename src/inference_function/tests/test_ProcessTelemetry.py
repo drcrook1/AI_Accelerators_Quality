@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from unittest.mock import ANY, Mock, patch
 
 import azure.functions as func
-import pypyodbc
+import pyodbc
 import requests
 from azure.storage.table import TableService
 
@@ -26,7 +26,7 @@ class TestProcessTelemetry(object):
 
     @patch('pypyodbc.Connection')
     @patch('azure.storage.table.TableService')
-    def test_persist(self, mockConnection: pypyodbc.Connection, mockTableService: TableService):
+    def test_persist(self, mockConnection: pyodbc.Connection, mockTableService: TableService):
         """
         Tests to ensure the generator posts events to event hub
         """

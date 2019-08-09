@@ -3,12 +3,12 @@ import logging
 import azure.functions as func
 import random
 from datetime import datetime, timezone
-import pypyodbc
+import pyodbc
 import os
-from ProcessTelemetry.WidgetSqlDAO import WidgetSqlDAO
-from ProcessTelemetry.WidgetTableDAO import WidgetTableDAO
-from ProcessTelemetry.WidgetWebAppClient import WidgetWebAppClient
-from ProcessTelemetry.MLModelStorageDAO import MLModelStorageDAO
+from .WidgetSqlDAO import WidgetSqlDAO
+from .WidgetTableDAO import WidgetTableDAO
+from .WidgetWebAppClient import WidgetWebAppClient
+from .MLModelStorageDAO import MLModelStorageDAO
 import uuid
 import requests
 
@@ -21,7 +21,7 @@ from ai_acc_quality.data_models.widget import Widget, Widget_Classification
 
 
 def connectODBC():
-    return pypyodbc.connect(os.environ['SqlDatabaseConnectionString'])
+    return pyodbc.connect(os.environ['SqlDatabaseConnectionString'])
 
 def connectTable():
     return TableService(connection_string=os.environ['TableStorageConnectionString'])

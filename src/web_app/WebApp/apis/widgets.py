@@ -28,9 +28,11 @@ def page_good():
 def page_bad():
     raise NotImplementedError()
 
-@widgets.route("/api/v1/widgets/page/all", methods=["POST"])
-def page_all():
-    raise NotImplementedError()
+@widgets.route("/api/v1/widgets/50", methods=["GET"])
+def fifty_widgets():
+    cnxn = get_db_cxn()
+    widgets = widgets_provider.get_50_widgets(cnxn, to_json=True)
+    return widgets
 
 @widgets.route("/api/v1/widgets/specificwidget", methods=["POST"])
 def widget():

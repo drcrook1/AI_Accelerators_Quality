@@ -4,6 +4,7 @@
 @Author-Email: DaCrook@Microsoft.com
 """
 from webapp.providers.classified_widget import get_widget, get_bad_widgets, get_good_widgets_count, get_bad_widgets_count, get_all_widgets_count, get_counts
+import webapp.providers.classified_widget as cwidget
 from webapp.providers.connections import get_db_cxn
 
 class TestClassifiedWidgetsProvider(object):
@@ -54,3 +55,9 @@ class TestClassifiedWidgetsProvider(object):
         cnxn = get_db_cxn()
         counts = get_counts(cnxn)
         assert(type(counts) is str)
+
+    def test_get_50_widgets_json(self):
+        cnxn = get_db_cxn()
+        widgets = cwidget.get_50_widgets(cnxn, to_json=True)
+        assert(type(widgets) is str)
+        

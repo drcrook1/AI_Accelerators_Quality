@@ -31,14 +31,14 @@ def get_widget(db_cnxn, serial_number : str = None, db_id : str = None) -> Widge
         row = cursor.execute("select * from dbo.classified_widgets where id = {}".format("'" + db_id + "'")).fetchone()
     return widget_from_row(row)
 
-def get_all_widgets(db_cnxn, where = None) -> List[Widget]:
+def get_50_widgets(db_cnxn, to_json : bool = False) -> List[Widget]:
     cursor = db_cnxn.cursor()
     widgets = []
-    sql = "select * from dbo.classified_widgets"
-    if(where is not None):
-        sql = sql + " " + where
+    sql = "select TOP (50) * from dbo.classified_widgets"
     for row in cursor.execute(sql):
         widgets.append(widget_from_row(row))
+    if(to_json):
+        return many_widgets_to_json(widgets)
     return widgets
 
 def many_widgets_to_json(widgets : List[Widget]) -> str:

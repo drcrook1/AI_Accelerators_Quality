@@ -74,7 +74,7 @@
                     <div class="card-header" id="headingTwo">
                     <h4 class="mb-0">
                         <div data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Line Performance Descending
+                        Line Performances
                         </button>
                     </h4>
                     </div>
@@ -108,12 +108,12 @@
                     <div class="card-header" id="headingThree">
                     <h4 class="mb-0">
                         <div data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        All Widgets
+                        Widgets List
                         </button>
                     </h4>
                     </div>
                     <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
-                        <div class="card-body">
+                        <div id="widgets_list" class="card-body">
                             <div>
                                 <table class="table table-striped table-hover">
                                     <thead>
@@ -124,24 +124,12 @@
                                         <th scope="col">Good Or Bad</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody data-bind="foreach: widgets">
                                         <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
-                                        <th scope="row">0001</th>
-                                        <td>1</td>
-                                        <td>1.2</td>
-                                        <td>Good</td>
-                                        </tr>
-                                        <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
-                                        <th scope="row">0001</th>
-                                        <td>1</td>
-                                        <td>1.2</td>
-                                        <td>Good</td>
-                                        </tr>
-                                        <tr class="clickable" data-toggle="modal" data-target="#exampleModalScrollable">
-                                        <th scope="row">0001</th>
-                                        <td>1</td>
-                                        <td>1.2</td>
-                                        <td>Good</td>
+                                        <th data-bind="text: serial_number" scope="row">LOADING...</th>
+                                        <td data-bind="text: line_id">LOADING...</td>
+                                        <td data-bind="text: std_dist">LOADING...</td>
+                                        <td data-bind="text: is_good">LOADING...</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -213,12 +201,9 @@
 <script type="text/javascript">
     var bad_widgets_endpoint = "{{ url_for('widgets.badwidgets') }}";
     var good_widgets_endpoint = "{{ url_for('widgets.goodwidgets') }}";
-    var page_good_widgets_endpoint = "{{ url_for('widgets.page_good') }}";
-    var page_bad_widgets_endpoint = "{{ url_for('widgets.page_bad') }}";
-    var page_all_widgets_endpoint = "{{ url_for('widgets.page_all') }}";
+    var fifty_widgets_endpoint = "{{ url_for('widgets.fifty_widgets') }}";
     var specific_widget_endpoint = "{{ url_for('widgets.widget') }}";
     var counts_widgets_endpoint = "{{ url_for('widgets.counts') }}";
-
     var overview_factories_endpoint = "{{ url_for('factories.overview') }}";
     var overview_lines_endpoint = "{{ url_for('factories.lines_overview') }}";
 </script>
@@ -232,5 +217,6 @@
 <script type="text/javascript" src="{{ url_for('static', filename='pagescripts/widget_telemetry.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='pagescripts/factory_overview.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='pagescripts/lines_overview.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='pagescripts/widgets_list.js') }}"></script>
 
 {% endblock %}

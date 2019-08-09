@@ -16,7 +16,7 @@ from azure.storage.table import TableService
 import ProcessTelemetry
 from ai_acc_quality.data_models.telemetry import Telemetry
 from ai_acc_quality.data_models.widget import Widget, Widget_Classification
-from ProcessTelemetry.MLModelClient import MLModelClient
+from ProcessTelemetry.MLModelStorageDAO import MLModelStorageDAO
 
 
 class TestProcessTelemetry(object):
@@ -35,14 +35,14 @@ class TestProcessTelemetry(object):
         input_event = func.EventHubEvent(body=input_widget.to_json().encode())
         mockRequests = Mock(requests)
 
-        mockMLClient = Mock(MLModelClient)
-        mockMLClient.classify_widget.return_value = generate_classification()
+        modelMLStorageDAO = Mock(MLModelStorageDAO)
+        modelMLStorageDAO.classify_widget.return_value = generate_classification()
 
         ProcessTelemetry.connectODBC = lambda: mockConnection
         ProcessTelemetry.connectTable = lambda: mockTableService
         ProcessTelemetry.webServerEndpoint = lambda: "http://example.com"
         ProcessTelemetry.requestsObj = lambda: mockRequests
-        ProcessTelemetry.modelClient = lambda: mockMLClient
+        ProcessTelemetry.connectModel = lambda: modelMLStorageDAO
 
         output_json = ProcessTelemetry.main(input_event)
 

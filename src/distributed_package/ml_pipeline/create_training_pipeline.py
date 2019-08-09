@@ -19,18 +19,18 @@ parser.add_argument('--resource_group', type=str,
                     required=True, help='resource group')
 parser.add_argument('--workspace', type=str, required=True,
                     help='Azure ML workspace name')
-parser.add_argument('--experiment', type=str,
-                    default='ai_quality', help='Azure ML experiment name')
 parser.add_argument('--storage_account', type=str,
                     required=True, help='Storage account name')
 parser.add_argument('--storage_container', type=str,
-                    default='eventhubs', help='Storage container name')
+                    default='eventhubs', help='Storage container name for telemetry data')
 parser.add_argument('--storage_key', type=str,
                     required=True, help='Storage account key')
 parser.add_argument('--storage_path', type=str, required=True,
                     help='Path to Avro data in storage container')
 parser.add_argument('--out_pipeline_id', type=str,
                     default='pipeline_id.txt', help='File to write created Pipeline ID into')
+parser.add_argument('--run_experiment', type=str,
+                    help='Run pipeline after creation. Provide experiment name as argument')
 args = parser.parse_args()
 
 ws = Workspace(
@@ -57,18 +57,17 @@ except ComputeTargetException:
 
 cpu_cluster.wait_for_completion(show_output=True)
 
-old_datastore = [ds for ds in ws.datastores if ds == "telemetry"]
-if old_datastore:
-    old_ds = Datastore.get(ws, "telemetry")
-    old_ds.unregister()
-
-telemetry_ds = Datastore.register_azure_blob_container(
-    workspace=ws,
-    datastore_name='telemetry',
-    container_name=args.storage_container,
-    account_name=args.storage_account,
-    account_key=args.storage_key,
-)
+old_telemetry_ds = [ds for ds in ws.datastores if ds == "telemetry"]
+if old_telemetry_ds:
+    telemetry_ds = Datastore.get(ws, 'telemetry')
+else:
+    telemetry_ds = Datastore.register_azure_blob_container(
+        workspace=ws,
+        datastore_name='telemetry',
+        container_name=args.storage_container_telemetry,
+        account_name=args.storage_account,
+        account_key=args.storage_key,
+    )
 
 input_data = DataReference(
     datastore=telemetry_ds,
@@ -147,6 +146,11 @@ with open(args.out_pipeline_id, "w") as op:
     op.write("{}\n".format(mlpipeline.id))
 
 print("Pipeline created.")
-print("You can run the pipeline with:")
-print("  az ml run submit-pipeline -g {} -w {} -n anomaly_train -i $(cat {})".format(
-    args.resource_group, args.workspace, args.out_pipeline_id))
+
+if args.run_experiment:
+    run = Experiment(ws, args.run_experiment).submit(pipeline)
+    run.wait_for_completion(show_output=True)
+else:
+    print("You can run the pipeline with:")
+    print("  az ml run submit-pipeline -g {} -w {} -n anomaly_train -i $(cat {})".format(
+        args.resource_group, args.workspace, args.out_pipeline_id))

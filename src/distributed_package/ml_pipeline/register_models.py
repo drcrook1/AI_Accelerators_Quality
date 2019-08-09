@@ -20,7 +20,13 @@ if __name__ == '__main__':
         type=str,
         nargs='+',
         default='outputs',
-        help='Location(s) of trained model.'
+        help='Location(s) of trained model input storage.'
+    )
+    parser.add_argument(
+        '--models_store',
+        type=str,
+        default='outputs',
+        help='Location(s) of model output storage.'
     )
 
     args, unparsed = parser.parse_known_args()
@@ -47,3 +53,6 @@ if __name__ == '__main__':
 
         print('Model registered: {} \nModel Description: {} \nModel Version: {}'.format(
             model.name, model.description, model.version))
+
+        model.download(target_dir=args.models_store)
+

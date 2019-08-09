@@ -8,12 +8,13 @@ import os
 from ProcessTelemetry.WidgetSqlDAO import WidgetSqlDAO
 from ProcessTelemetry.WidgetTableDAO import WidgetTableDAO
 from ProcessTelemetry.WidgetWebAppClient import WidgetWebAppClient
-from ProcessTelemetry.MLModelClient import MLModelClient
+from ProcessTelemetry.MLModelStorageDAO import MLModelStorageDAO
 import uuid
 import requests
 
 from azure.storage import CloudStorageAccount
-from azure.storage.table import TableService, Entity
+from azure.storage.table import TableService
+from azure.storage.blob import BlockBlobService
 
 from ai_acc_quality.data_models.telemetry import Telemetry
 from ai_acc_quality.data_models.widget import Widget, Widget_Classification
@@ -31,14 +32,15 @@ def webServerEndpoint():
 def requestsObj():
     return requests
 
-def modelClient() -> MLModelClient:
-    return MLModelClient()
+def connectModel() -> MLModelStorageDAO:
+    blobService = BlockBlobService(connection_string=os.environ['ModelsStorageConnectionString'])
+    return MLModelStorageDAO(blobService, "models")
 
 def main(event: func.EventHubEvent):
 
     w = Widget.from_json(event.get_body().decode('utf-8'))
 
-    w.classification = modelClient().classify_widget(w)
+    w.classification = connectModel().classify_widget(w)
 
     (result, good) = w.classification.is_good()
     assert result.success

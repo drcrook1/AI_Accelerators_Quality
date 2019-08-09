@@ -42,10 +42,21 @@ az functionapp identity assign -g $RESOURCE_GROUP -n $PROC_FUNCTION_APP_NAME \
 
 echo 'Granting MSI permission on Azure ML workspace'
 msi_id=$(az functionapp identity show -g $RESOURCE_GROUP -n $PROC_FUNCTION_APP_NAME --query principalId -o tsv)
+echo ". Service principal: $msi_id"
 ws_id=$(az ml workspace show -g $RESOURCE_GROUP -w $AML_WORKSPACE --query id -o tsv)
-existing_assignment=$(az role assignment list --scope "$ws_id" --assignee "$msi_id")
+echo ". Workspace: $ws_id"
+TIMEOUT=120
+for i in $(seq 1 $TIMEOUT); do
+  echo 'Attempting to retrieve existing permissions...'
+  if existing_assignment=$(az role assignment list --scope "$ws_id" --assignee "$msi_id"); then
+    break
+  fi
+  sleep 5
+done
+
 if test -z "$existing_assignment"; then
-  az ml workspace share -g $RESOURCE_GROUP -w $AML_WORKSPACE --role Reader --user "$msi_id"
+    echo 'Assigning permission'
+    az ml workspace share -g $RESOURCE_GROUP -w $AML_WORKSPACE --role Reader --user "$msi_id"
 fi
 
 echo 'getting connection strings'

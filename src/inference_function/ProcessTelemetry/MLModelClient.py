@@ -33,17 +33,11 @@ class MLModelClient:
             workspace_name=os.environ["AzureMLWorkspace"],
             auth=self.azureMLAuthentication())
 
-    def _downloadModel(self, ws, modelName, dirName):
-        model = Model(ws, name=modelName)
-        model.download(target_dir=dirName)
-
     def classify_widget(self, w: Widget):
         ws = self.azureMLWorkspace()
 
-        # Get & Download model
         with tempfile.TemporaryDirectory() as tmpdir:
-            self._downloadModel(ws, "sklearn_preprocessing", tmpdir)
-            self._downloadModel(ws, "autoencoder", tmpdir)
-            self._downloadModel(ws, "autoencoder_stats", tmpdir)
+            model = Model(ws, name="anomaly")
+            model.download(target_dir=tmpdir)
 
-            return score(tmpdir, w)
+            return score(os.path.join(tmpdir, "model"), w)

@@ -148,7 +148,7 @@ def main():
 
     # get command-line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--num_epochs', type=int, default=2,
+    parser.add_argument('--num_epochs', type=int, default=200,
                         help='number of epochs to train')
     parser.add_argument('--data_dir', type=str, default=".", help='data directory')
     parser.add_argument('--output_dir', type=str, default="./outputs", help='output directory')

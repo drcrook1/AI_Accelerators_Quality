@@ -11,8 +11,9 @@ from ai_acc_quality.ml.preprocessing import score_preprocessing
 
 
 def score(modelPath:str, widget:Widget) -> Widget_Classification:
-    preprocessing = joblib.load(modelPath + "/preprocessing.joblib")
-    anomaly_model = torch.load(modelPath + "/model.pt")
+    
+    preprocessing = joblib.load(os.path.join(modelPath, "preprocessing.joblib"))
+    anomaly_model = torch.load(os.path.join(modelPath, "model.pt"))
     output1 = score_preprocessing(preprocessing, widget)
     output2 = score_anomaly(anomaly_model, output1)
     with open(os.path.join(modelPath, "model_stats.json")) as statsf:

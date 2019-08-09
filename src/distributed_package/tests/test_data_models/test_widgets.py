@@ -6,6 +6,7 @@ from ai_acc_quality.result import Error, Result
 from ai_acc_quality.data_models.widget import Widget
 from helpers.generators import generate_widget
 import json
+import ast
 
 class TestWidgets(object):
     """
@@ -21,7 +22,10 @@ class TestWidgets(object):
         assert(type(s) is str)
         w2 = Widget.from_json(s)
         assert(w.serial_number == w2.serial_number)
-        assert w2.to_json() == s
+        w2_json = w2.to_json()
+        assert(type(w2_json) is str)
+        json_obj_version = json.loads(w2_json)
+        assert(type(json_obj_version["classification"]["is_good"]) is bool)
 
     def test_widget_no_classification(self):
         """
@@ -33,7 +37,8 @@ class TestWidgets(object):
         assert(type(s) is str)
         w2 = Widget.from_json(s)
         assert(w.serial_number == w2.serial_number)
-        assert w2.to_json() == s
+        w2_json = w2.to_json()
+        assert(type(w2_json) is  str)
         assert w2.line_id == "1"
     
     def test_many_widgets_to_json(self):

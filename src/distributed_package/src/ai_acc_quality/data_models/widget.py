@@ -20,14 +20,14 @@ class Widget_Classification(Base_Model):
     threshold : float = None
     classified_time : datetime = None
 
-    def is_good(self) -> Tuple[Result, bool]:
+    def is_good(self) -> bool:
         """
         Returns True for good and False for bad
         """
         good = True
         if(self.std_dist > self.threshold):
             good = False
-        return Result(True), good
+        return good
 
     def to_dict(self) -> Tuple[Result, Dict]:
         d = {}
@@ -36,7 +36,7 @@ class Widget_Classification(Base_Model):
         d["mean"] = self.mean
         d["threshold"] = self.threshold
         d["classified_time"] = self.classified_time.isoformat()
-        _, d["is_good"] = self.is_good()
+        d["is_good"] = self.is_good()
         return Result(True), d
 
     @classmethod

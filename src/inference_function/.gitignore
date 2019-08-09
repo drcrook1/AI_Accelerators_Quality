@@ -41,4 +41,4 @@ venv.bak/
 __pycache__/
 *.py[cod]
 *$py.class
-processing_function.zip
+inference_function.zip

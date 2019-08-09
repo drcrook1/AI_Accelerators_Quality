@@ -1,1 +1,0 @@
-pip install --extra-index-url https://ai_acc_quality:xm2weusrt7gulr6m4lgtvrytgbgyhnthkwyafsg6bsfb4z7brspq@pkgs.dev.azure.com/dacrook-samples/_packaging/ai_acc_quality/pypi/simple/ ai_acc_quality --upgrade

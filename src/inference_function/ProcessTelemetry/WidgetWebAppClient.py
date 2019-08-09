@@ -17,7 +17,7 @@ class WidgetWebAppClient:
         # Warning: has side-effect to clear telemetry list, ust be last action in function
         w.telemetry.clear()
 
-        (result, good) = w.classification.is_good()
+        good = w.classification.is_good()
         endpoint = "goodwidget" if good else "badwidget"
         headers = {'Content-type': 'application/json'}
         endpoint_url = "{}/api/v1/live/{}".format(self.baseURL, endpoint)

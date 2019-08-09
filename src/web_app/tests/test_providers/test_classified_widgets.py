@@ -5,7 +5,7 @@
 """
 from webapp.providers.classified_widget import get_widget, get_bad_widgets, get_good_widgets_count, get_bad_widgets_count, get_all_widgets_count, get_counts
 import webapp.providers.classified_widget as cwidget
-from webapp.providers.connections import get_db_cxn
+from webapp.providers.connections import get_db_cxn, get_tbl_cnxn
 
 class TestClassifiedWidgetsProvider(object):
     """
@@ -61,3 +61,4 @@ class TestClassifiedWidgetsProvider(object):
         widgets = cwidget.get_50_widgets(cnxn, to_json=True)
         assert(type(widgets) is str)
         
+    def test_get_telemetry(self):

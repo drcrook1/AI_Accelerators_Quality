@@ -22,14 +22,14 @@ def widget_from_row(row) -> Widget:
     wid.factory_id = row.factory_id
     return wid
 
-def populate_widget_telemetry(tbl_cnxn : TableService, widget : Widget):
+def get_widget_telemetry(tbl_cnxn : TableService, widget : Widget):
     """
     takes a widget and appends the telemetry to it.
     """
     partition_key = str(widget.factory_id) + ":" + str(widget.line_id)
     row_key = str(widget.factory_id) + "-" + str(widget.serial_number)
-    tbl_cnxn.get_entity("Predictions", partition_key, row_key)
-    return None
+    telemetry = tbl_cnxn.get_entity("Predictions", partition_key, row_key)
+    return telemetry
 
 def get_widget(db_cnxn, serial_number : str = None, db_id : str = None) -> Widget:
     cursor = db_cnxn.cursor()

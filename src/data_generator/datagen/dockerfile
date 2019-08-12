@@ -1,0 +1,26 @@
+FROM continuumio/miniconda3
+
+RUN apt-get update -y
+RUN apt-get upgrade -y
+
+RUN apt-get install build-essential libssl-dev libffi-dev unixodbc-dev -y
+
+RUN pip install --upgrade pip setuptools wheel
+
+ADD requirements.txt /app/
+RUN pip install -r /app/requirements.txt
+
+EXPOSE 80
+
+COPY . /datagen/
+
+RUN mv /datagen/run.py /run.py
+
+RUN chmod -x /run.py
+
+ENV PYTHONUNBUFFERED 1
+
+# Turn on the Flask-DebugToolbar
+ENV FLASK_DEBUG 1
+
+CMD ["python", "/run.py"]

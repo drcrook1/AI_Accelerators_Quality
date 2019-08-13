@@ -62,3 +62,9 @@ class TestWidgets(object):
         tbl_cnxn.delete_entity("classifiedwidgets", Widget.generate_partition_key(w.factory_id, w.line_id), w.serial_number)
         assert(w.serial_number == w2.serial_number)
         assert(len(w2.telemetry) > 3)
+
+    def test_sql_interaction(self):
+        w = generate_widget()
+        db_cnxn = storcon.get_db_cxn()
+        w.persist_sql(db_cnxn)
+        assert(True)

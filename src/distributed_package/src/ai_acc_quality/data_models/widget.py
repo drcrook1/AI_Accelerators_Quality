@@ -112,10 +112,11 @@ class Widget(Base_Model):
             [threshold], [is_good], 
             [factory_id], [line_id], [classified_time])
             VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+        time =  str(self.classification.classified_time.isoformat().split(".")[0])
         values = (
             self.serial_number, self.classification.std_dist, self.classification.std, self.classification.mean,
             self.classification.threshold, self.classification.is_good(), 
-            self.factory_id, self.line_id, self.classification.classified_time.isoformat())
+            self.factory_id, self.line_id, time)
         cursor.execute(query, values)
         cursor.commit()
         cursor.close()

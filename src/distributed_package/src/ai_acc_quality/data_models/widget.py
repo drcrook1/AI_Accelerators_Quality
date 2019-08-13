@@ -111,7 +111,7 @@ class Widget(Base_Model):
             [serial_number], [std_dist], [std], [mean],
             [threshold], [is_good], 
             [factory_id], [line_id], [classified_time])
-            VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+            VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
         values = (
             self.serial_number, self.classification.std_dist, self.classification.std, self.classification.mean,
             self.classification.threshold, self.classification.is_good(), 

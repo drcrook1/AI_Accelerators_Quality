@@ -24,10 +24,12 @@ def run(event_json):
     classifier.load_model()
     widget.classification = classifier.predict(widget)
 
-    if(widget.classification.is_good() is False):
-        post_bad_widget_to_web(widget)
-    
-    widget.persist_sql(get_db_cxn())
-    widget.persist_table(get_tbl_cnxn())
-    logging.info("completed widget: {}".format(widget.serial_number))
-    return True
+    try:
+        if(widget.classification.is_good() is False):
+            post_bad_widget_to_web(widget)
+        
+        widget.persist_sql(get_db_cxn())
+        widget.persist_table(get_tbl_cnxn())
+        logging.info("completed widget: {}".format(widget.serial_number))
+    except Exception as e:
+        logging.error(str(e))

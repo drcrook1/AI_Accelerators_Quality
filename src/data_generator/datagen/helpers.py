@@ -9,6 +9,7 @@ from ai_acc_quality.data_models.telemetry import Telemetry
 import random
 from typing import List
 from datetime import datetime
+import uuid
 import time
 import os
 
@@ -36,7 +37,7 @@ def generate_classification() -> Widget_Classification:
 
 def generate_widget(is_anomaly=False) -> Widget:
     w = Widget()
-    w.serial_number = "devserial1"
+    w.serial_number = str(uuid.uuid4())
     w.factory_id = "kitty hawk"
     w.line_id = "1"
     w.telemetry = generate_telemetry_list(10)

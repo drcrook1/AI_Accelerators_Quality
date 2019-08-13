@@ -11,7 +11,7 @@ class TestResultsAndErrors(object):
 
     def test_result_with_error(self):
         """
-        Tests to ensure the assembly object can be converted to json properly
+        Test results and error objects
         """
         err = Error("1001")
         assert(err.code_family == "ML")

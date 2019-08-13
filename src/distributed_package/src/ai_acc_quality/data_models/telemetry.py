@@ -37,9 +37,9 @@ class Telemetry(Base_Model):
         _, s_dict = self.to_dict()
         return json.dumps(s_dict)
 
-    @classmethod
-    def from_dict(cls, data):
-        w = cls()
+    @staticmethod
+    def from_dict(data):
+        w = Telemetry()
         w.voltage = data["voltage"]
         w.amperage = data["amperage"]
         w.ambient_temp = data["ambient_temp"]

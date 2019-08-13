@@ -1,4 +1,8 @@
 #Requirements from setup.py
+azure
+azure-eventhub
+azure-cosmosdb-table
+pyodbc
 .[ml]
 azureml-sdk>=1.0.55
 fastavro

@@ -88,12 +88,53 @@ class Widget(Base_Model):
         _, s_dict = self.to_dict()
         return json.dumps(s_dict)
 
-    @classmethod
-    def from_dict(cls, data):
-        w = cls()
+    @staticmethod
+    def from_dict(data):
+        w = Widget()
         w.serial_number = data["serial_number"]
         w.factory_id = data["factory_id"]
         w.line_id = data["line_id"]
-        w.telemetry = cls._list_from_dict(data["telemetry"], Telemetry)
+        w.telemetry = []
+        for telemetry in data["telemetry"]:
+            w.telemetry.append(Telemetry.from_dict(telemetry))
         w.classification = Widget_Classification.from_dict(data["classification"]) if "classification" in data else None
         return w
+
+    @staticmethod
+    def widget_from_json(data):
+        data = json.loads(data)
+        return Widget.from_dict(data)
+
+    def persist_sql(self, cnxn):
+        cursor = cnxn.cursor()
+        query = """INSERT INTO [dbo].[classified_widgets](
+            [serial_number], [std_dist], [std], [mean],
+            [threshold], [is_good], 
+            [factory_id], [line_id], [classified_time])
+            VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+        values = (
+            self.serial_number, self.classification.std_dist, self.classification.std, self.classification.mean,
+            self.classification.threshold, self.classification.is_good(), 
+            self.factory_id, self.line_id, self.classification.classified_time.isoformat())
+        cursor.execute(query, values)
+        cursor.commit()
+        cursor.close()
+
+    @staticmethod
+    def generate_partition_key(factory_id, line_id):
+        return factory_id + ":" + line_id
+
+    def persist_table(self, cnxn):
+        data = {
+            "PartitionKey": Widget.generate_partition_key(self.factory_id, self.line_id),
+            "RowKey" : self.serial_number,
+            "data" : json.dumps(self.to_json())
+        }
+        cnxn.insert_entity("classifiedwidgets", data)
+
+    @staticmethod
+    def from_table(cnxn, factory_id, line_id, serial_number):
+        entity = cnxn.get_entity("classifiedwidgets", Widget.generate_partition_key(factory_id, line_id), serial_number)
+        data = json.loads(entity.data)
+        widget = Widget.from_json(data)
+        return widget

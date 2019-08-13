@@ -5,6 +5,7 @@ Email: DaCrook@Microsoft.com
 from ai_acc_quality.result import Error, Result
 from ai_acc_quality.data_models.widget import Widget
 from helpers.generators import generate_widget
+import ai_acc_quality.connectors.storage as storcon
 import json
 import ast
 
@@ -15,7 +16,7 @@ class TestWidgets(object):
 
     def test_widget(self):
         """
-        Tests to ensure the assembly object can be converted to json properly
+        Tests to ensure the object can be converted to json properly
         """
         w = generate_widget()
         s = w.to_json()
@@ -29,7 +30,7 @@ class TestWidgets(object):
 
     def test_widget_no_classification(self):
         """
-        Tests to ensure the assembly object can be converted to json properly
+        Tests to ensure the object can be converted to json properly
         """
         w = generate_widget()
         w.classification = None
@@ -52,3 +53,12 @@ class TestWidgets(object):
         w.classification = None
         s = w.to_json()
         assert(type(s) is str)
+
+    def test_table_interaction(self):
+        w = generate_widget()
+        tbl_cnxn = storcon.get_tbl_cnxn()
+        w.persist_table(tbl_cnxn)
+        w2 = Widget.from_table(tbl_cnxn, w.factory_id, w.line_id, w.serial_number)
+        tbl_cnxn.delete_entity("classifiedwidgets", Widget.generate_partition_key(w.factory_id, w.line_id), w.serial_number)
+        assert(w.serial_number == w2.serial_number)
+        assert(len(w2.telemetry) > 3)

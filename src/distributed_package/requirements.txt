@@ -3,6 +3,6 @@ azure
 azure-eventhub
 azure-cosmosdb-table
 pyodbc
-.[ml]
+python-dateutil
 azureml-sdk>=1.0.55
 fastavro

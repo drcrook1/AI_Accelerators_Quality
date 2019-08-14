@@ -5,3 +5,4 @@ azure-cosmosdb-table
 pyodbc
 azure
 requests
+python-dateutil

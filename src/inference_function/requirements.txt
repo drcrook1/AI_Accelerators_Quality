@@ -1,5 +1,7 @@
 azure-functions
 azure-storage
+azure-eventhub
+azure-cosmosdb-table
 pyodbc
 azure
 requests

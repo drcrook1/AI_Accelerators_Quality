@@ -5,7 +5,6 @@ Email: DaCrook@Microsoft.com
 from ai_acc_quality.result import Result, Error
 from ai_acc_quality.data_models.base_model import Base_Model
 from datetime import datetime
-import dateutil.parser as parser
 from typing import Tuple, Dict
 import json
 
@@ -45,5 +44,5 @@ class Telemetry(Base_Model):
         w.ambient_temp = data["ambient_temp"]
         w.ambient_humidity = data["ambient_humidity"]
         w.flux_capacitance = data["flux_capacitance"]
-        w.time_stamp = parser.parse(data["time_stamp"])
+        w.time_stamp = datetime.strptime(data["time_stamp"].split(".")[0], "%Y-%m-%dT%H:%M:%S")
         return w

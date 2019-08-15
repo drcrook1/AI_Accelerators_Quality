@@ -13,18 +13,22 @@ import uuid
 import time
 import os
 
-def generate_telemetry() -> Telemetry:
+def generate_telemetry(is_anomaly=False) -> Telemetry:
     t = Telemetry()
     t.ambient_humidity = random.randrange(0.0, 100.0)
-    t.ambient_temp = random.randrange(0.0, 120.0)
-    t.amperage = random.random()
-    t.voltage = random.random()
-    t.flux_capacitance = random.random()
+    t.ambient_temp = random.randrange(0.0, 100.0)
+    t.amperage = random.randrange(0.0, 100.0)
+    if(is_anomaly):
+        t.voltage = random.randrange(0.0, 50.0)
+        t.flux_capacitance = random.randrange(0.0, 50.0)
+    else:
+        t.voltage = random.randrange(65.0, 100.0)
+        t.flux_capacitance = random.randrange(65.0, 100.0)
     t.time_stamp = datetime.utcnow()
     return t
 
-def generate_telemetry_list(quantity : int) -> List[Telemetry]:
-    return [generate_telemetry() for i in range(0, quantity)]
+def generate_telemetry_list(quantity : int, is_anomaly=False) -> List[Telemetry]:
+    return [generate_telemetry(is_anomaly=is_anomaly) for i in range(0, quantity)]
 
 def generate_classification() -> Widget_Classification:
     classification = Widget_Classification()
@@ -38,9 +42,11 @@ def generate_classification() -> Widget_Classification:
 def generate_widget(is_anomaly=False) -> Widget:
     w = Widget()
     w.serial_number = str(uuid.uuid4())
-    w.factory_id = "kitty hawk"
-    w.line_id = "1"
-    w.telemetry = generate_telemetry_list(10)
+    factories = ["kitty hawk", "nags head", "seattle", "miami"]
+    w.factory_id = random.choice(factories)
+    line_ids = ["1", "2", "3"]
+    w.line_id = random.choice(line_ids)
+    w.telemetry = generate_telemetry_list(10, is_anomaly=is_anomaly)
     w.classification = generate_classification()
     return w
 

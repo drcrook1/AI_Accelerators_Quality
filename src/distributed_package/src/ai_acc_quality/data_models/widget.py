@@ -45,7 +45,10 @@ class Widget_Classification(Base_Model):
         c.std = data["std"]
         c.mean = data["mean"]
         c.threshold = data["threshold"]
-        c.classified_time = datetime.strptime(data["classified_time"].split(".")[0], "%Y-%m-%dT%H:%M:%S")
+        try:
+            c.classified_time = datetime.strptime(data["classified_time"].split(".")[0], "%Y-%m-%dT%H:%M:%S")
+        except Exception:
+            c.classified_time = datetime.strptime(data["classified_time"].split(".")[0], "%Y-%m-%d %H:%M:%S")
         return c
 
     def to_json(self) -> str:

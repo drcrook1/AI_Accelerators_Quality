@@ -44,5 +44,8 @@ class Telemetry(Base_Model):
         w.ambient_temp = data["ambient_temp"]
         w.ambient_humidity = data["ambient_humidity"]
         w.flux_capacitance = data["flux_capacitance"]
-        w.time_stamp = datetime.strptime(data["time_stamp"].split(".")[0], "%Y-%m-%dT%H:%M:%S")
+        try:
+            w.time_stamp = datetime.strptime(data["time_stamp"].split(".")[0], "%Y-%m-%dT%H:%M:%S")
+        except Exception:
+            w.time_stamp = datetime.strptime(data["time_stamp"].split(".")[0], "%Y-%m-%d %H:%M:%S")
         return w

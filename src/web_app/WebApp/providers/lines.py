@@ -8,6 +8,7 @@ import pandas as pd
 from scipy.stats import linregress
 from webapp.providers.helpers import line_to_percent
 import math
+from typing import List
 
 def get_anomaly_trend(line_data : pd.DataFrame) -> float:
     """
@@ -49,11 +50,23 @@ def get_line_overviews(db_cnxn, factory_id):
         line_datas.append(result)
     return line_datas
 
-def get_all_overviews(db_cnxn, factory_id_list, as_json = False):
+def get_factories_list(db_cnxn) -> List[str]:
+    """
+    gets distinct factories
+    """
+    cursor = db_cnxn.cursor()
+    sql = "select distinct factory_id from dbo.classified_widgets"
+    data = []
+    for row in cursor.execute(sql):
+        data.append(row.factory_id)
+    return data
+
+def get_all_overviews(db_cnxn, as_json = False):
     """
     creates a list of lists for all factories and lines in them.
     """
     overviews = []
+    factory_id_list = get_factories_list(db_cnxn)
     for f_id in factory_id_list:
         result = {}
         result["factory_id"] = f_id

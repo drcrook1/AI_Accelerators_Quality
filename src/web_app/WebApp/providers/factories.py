@@ -7,6 +7,7 @@ import json
 import pandas as pd
 from scipy.stats import linregress
 from webapp.providers.helpers import line_to_percent
+from typing import List
 
 class FactoryOverview():
     factory_id = None
@@ -67,9 +68,21 @@ def get_factory_overview(db_cnxn, factory_id) -> dict:
     overview.anomaly_trend = get_anomaly_trend(db_cnxn, factory_id)
     return overview.to_dict()
 
-def get_all_overviews(db_cnxn, factories_list) -> str:
+def get_all_overviews(db_cnxn) -> str:
+    factories_list = get_factories_list(db_cnxn)
     f_overviews = []
     for factory in factories_list:
         data = get_factory_overview(db_cnxn, factory)
         f_overviews.append(data)
     return json.dumps(f_overviews)
+
+def get_factories_list(db_cnxn) -> List[str]:
+    """
+    gets distinct factories
+    """
+    cursor = db_cnxn.cursor()
+    sql = "select distinct factory_id from dbo.classified_widgets"
+    data = []
+    for row in cursor.execute(sql):
+        data.append(row.factory_id)
+    return data

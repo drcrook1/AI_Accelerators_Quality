@@ -13,12 +13,10 @@ factories = Blueprint("factories", __name__)
 
 @factories.route("/api/v1/factories/overview", methods=["GET"])
 def overview():
-    f_ids = ["kitty hawk", "nags head"]
     cnxn = get_db_cxn()
-    return f_provider.get_all_overviews(cnxn, f_ids)
+    return f_provider.get_all_overviews(cnxn)
 
 @factories.route("/api/v1/factories/lines/overview", methods=["GET"])
 def lines_overview():
-    f_ids = ["kitty hawk", "nags head"]
     cnxn = get_db_cxn()
-    return l_provider.get_all_overviews(cnxn, f_ids, as_json=True)
+    return l_provider.get_all_overviews(cnxn, as_json=True)

@@ -12,17 +12,6 @@ class TestClassifiedWidgetsProvider(object):
     Test Suite against widgets provider
     """
 
-    def test_get_widget(self):
-        """
-        Test to ensure we can get a widget
-        """
-        cnxn = get_db_cxn()
-        widget = get_widget(cnxn, serial_number="w1")
-        f_id = widget.factory_id
-        assert(f_id == "kitty hawk")
-        is_good = widget.classification.is_good
-        assert(is_good is True)
-
     def test_get_bad_widgets(self):
         """
         Test to ensure we can get bad widgets

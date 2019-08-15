@@ -26,6 +26,5 @@ class TestFactoriesProvider(object):
 
     def test_multiple_factory_overviews(self):
         cnxn = get_db_cxn()
-        f_ids = ["kitty hawk", "nags head"]
-        data = factories.get_all_overviews(cnxn, f_ids)
+        data = factories.get_all_overviews(cnxn)
         assert(type(data) is str)

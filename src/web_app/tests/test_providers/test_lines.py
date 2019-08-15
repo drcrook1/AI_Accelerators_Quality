@@ -21,8 +21,7 @@ class TestLinesProvider(object):
     
     def test_get_all_line_overviews(self):
         cnxn = get_db_cxn()
-        f_ids = ["kitty hawk", "nags head"]
-        overviews = lines.get_all_overviews(cnxn, f_ids)
+        overviews = lines.get_all_overviews(cnxn)
         assert(len(overviews) > 0)
 
     

@@ -39,6 +39,62 @@ print(data.count())
 
 # COMMAND ----------
 
+display(data)
+
+# COMMAND ----------
+
+n_samples = data.count()
+telemetry_keys = list(data.collect()[0]["telemetry"][0].asDict().keys())
+telemetry_keys.remove("time_stamp")
+telemetry_keys.sort()
+print(telemetry_keys)
+
+feature_keys = list(data.collect()[0]["features"].asDict().keys())
+feature_keys.sort()
+print(feature_keys)
+
+# COMMAND ----------
+
+row = data.collect()[0]
+
+# COMMAND ----------
+
+import numpy as np
+
+def prep_row_telemetry_ml(row, telemetry_keys):
+  """
+  telemetry keys must be a sorted list.
+  """
+  print("starting")
+  sorted_tel_seq = sorted(row["telemetry"], key = lambda i: i["time_stamp"])
+  n_steps = len(sorted_tel_seq)
+  n_vars = len(telemetry_keys)
+  print(n_steps)
+  print(n_vars)
+  tel_data = np.empty((n_steps, n_vars))
+  for i in range(0,n_steps):
+    for j in range(0,n_vars):
+      tel_data[i,j] = sorted_tel_seq[i][telemetry_keys[j]]
+  return tel_data
+
+def prep_feature_ml(row, feature_keys):
+  """
+  feature keys must be a sorted list
+  """
+  n_vars = len(feature_keys)
+  feature_data = np.empty((n_vars))
+  for i in range(0,n_vars):
+    feature_data[i] = row["features"][feature_keys[i]]
+  return prep_feature_ml
+  
+
+tel_data = prep_row_telemetry_ml(row, telemetry_keys)
+print(data)
+print(row["telemetry"])
+
+
+# COMMAND ----------
+
 from numpy import array
 from keras.models import Sequential
 from keras.layers import LSTM
@@ -64,6 +120,11 @@ model.fit(sequence, sequence, epochs=300, verbose=0)
 # demonstrate recreation
 yhat = model.predict(sequence, verbose=0)
 print(yhat[0,:,0])
+
+# COMMAND ----------
+
+sequence = array([0.1, 0.2, 0.3, 0.4, 7.5, 0.6, 0.7, 0.8, 0.9]).reshape(1,n_in,1)
+model.predict(sequence, verbose=0)
 
 # COMMAND ----------
 

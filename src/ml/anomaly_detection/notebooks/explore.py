@@ -39,6 +39,7 @@ print(data.count())
 
 # COMMAND ----------
 
+print(data.count())
 display(data)
 
 # COMMAND ----------
@@ -89,9 +90,24 @@ def prep_feature_ml(row, feature_keys):
   
 
 tel_data = prep_row_telemetry_ml(row, telemetry_keys)
-print(data)
+print(tel_data)
 print(row["telemetry"])
 
+
+# COMMAND ----------
+
+display(data)
+
+# COMMAND ----------
+
+def get_unique_features(data, feature_keys):
+  unique_features = {}
+  for feature in feature_keys:
+    unique_features[feature] = [row[0] for row in data.select(col("features").getItem(feature)).distinct().collect()]
+  return unique_features
+
+u_features = get_unique_features(data, feature_keys)
+print(u_features)
 
 # COMMAND ----------
 

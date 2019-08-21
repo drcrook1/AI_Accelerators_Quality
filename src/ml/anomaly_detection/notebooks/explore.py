@@ -28,11 +28,6 @@ print("files found: {}".format(len(files)))
 
 # COMMAND ----------
 
-df = spark.read.option("multiline", "true").json(files[0][5:])
-display(df)
-
-# COMMAND ----------
-
 data = spark.read.option("multiline", "true").json(files[0][5:])
 for file in files[1:]:
   try:
@@ -50,7 +45,6 @@ from keras.layers import LSTM
 from keras.layers import Dense
 from keras.layers import RepeatVector
 from keras.layers import TimeDistributed
-from keras.utils import plot_model
 
 # COMMAND ----------
 
@@ -67,7 +61,6 @@ model.add(TimeDistributed(Dense(1)))
 model.compile(optimizer='adam', loss='mse')
 # fit model
 model.fit(sequence, sequence, epochs=300, verbose=0)
-plot_model(model, show_shapes=True, to_file='reconstruct_lstm_autoencoder.png')
 # demonstrate recreation
 yhat = model.predict(sequence, verbose=0)
 print(yhat[0,:,0])

@@ -12,7 +12,7 @@ except Exception:
 
 # COMMAND ----------
 
-from pyspark.sql.functions import col, column, udf, lit
+from pyspark.sql.functions import col, column, udf, lit, Column
 from pyspark.sql.types import ArrayType, IntegerType, FloatType
 
 # COMMAND ----------
@@ -126,67 +126,112 @@ n_data.show()
 
 # COMMAND ----------
 
-display(n_data)
-
-# COMMAND ----------
-
-from pyspark.sql.functions import udf, col
-
-#sample data
-df_list = ['Apps A','Chrome', 'BBM', 'Apps B', 'Skype']
-df = sqlContext.createDataFrame([(l,) for l in df_list], ['apps'])
-df.show()
-print(type(df))
-#some lists definition
-browser_list = ['Chrome', 'Firefox', 'Opera']
-chat_list = ['WhatsApp', 'BBM', 'Skype']
-
-#udf definition    
-def calc_app(app, app_list):
-    if app in app_list:
-        return 1
-    else:
-        return 0
-def calc_appUDF(app_list):
-    return udf(lambda l: calc_app(l, app_list))
-
-#add new columns
-df = df.withColumn('app_browser', calc_appUDF(browser_list)(col('apps')))
-df = df.withColumn('app_chat', calc_appUDF(chat_list)(col('apps')))
-df.show()
+result = n_data.sample(True, 25.0 / n_data.count())
+result = result.select("telemetry_matrix").collect()
+stacked = None
+for i in range(0, len(result)):
+  result[i] = np.array(result[i]["telemetry_matrix"]).reshape(1,-1,5)
+result = tuple(result)
+result = np.vstack(result)
+print(result)
 
 # COMMAND ----------
 
 from numpy import array
-from keras.models import Sequential
+from keras.models import Sequential, Model
 from keras.layers import LSTM
 from keras.layers import Dense
 from keras.layers import RepeatVector
 from keras.layers import TimeDistributed
+import keras
 
 # COMMAND ----------
 
-sequence = array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
-# reshape input into [samples, timesteps, features]
-n_in = len(sequence)
-sequence = sequence.reshape((1, n_in, 1))
+from pyspark.sql.functions import monotonically_increasing_id
+import random
+
+class Spark_RDD_DataGenerator(keras.utils.Sequence):
+    """Enables usage of a data generator for keras"""
+    
+    spark_dataframe = None
+    batch_size = None
+    shuffle = True
+    num_samples = None
+    x_col = None
+    y_col = None
+    
+    def __init__(self, spark_dataframe, batch_size=32, x_col = "telemetry_matrix", y_col = "telemetry_matrix"):
+        """
+        Initializes the data generator class
+        """
+        self.batch_size = float(batch_size)
+        self.spark_dataframe = spark_dataframe.withColumn("id", monotonically_increasing_id())
+        self.num_samples = self.spark_dataframe.count()
+        self.x_col = x_col
+        self.y_col = y_col
+        self.on_epoch_end()
+
+    def __len__(self):
+        """
+        How many batches make up a single epoch.
+        """
+        return int(np.floor(self.num_samples / self.batch_size))
+
+    def __getitem__(self, index):
+        """
+        Returns the x, y pair for one batch
+        """
+        # Generate indexes of the batch
+        batch = self.spark_dataframe.sample(True, self.batch_size / self.num_samples)
+        x_batch = batch.select(self.x_col).collect()
+        y_batch = batch.select(self.y_col).collect()
+        for i in range(0, batch.count()):
+          x_batch[i] = np.array(x_batch[i][self.x_col]).reshape(1,-1,5)
+          y_batch[i] = np.array(y_batch[i][self.y_col]).reshape(1,-1,5)
+          
+        x_batch = tuple(x_batch)
+        x_batch = np.vstack(x_batch)
+        
+        y_batch = tuple(y_batch)
+        y_batch = np.vstack(y_batch)
+
+        return x_batch, y_batch
+
+    def on_epoch_end(self):
+        """
+        Does stuff at end of an epoch
+        """
+        self.shuffle = True
+
+
+# COMMAND ----------
+
 # define model
+num_features = len(telemetry_keys)
+time_steps = 10
 model = Sequential()
-model.add(LSTM(100, activation='relu', input_shape=(n_in,1)))
-model.add(RepeatVector(n_in))
+model.add(LSTM(100, activation='relu', input_shape=(time_steps, num_features)))
+model.add(RepeatVector(time_steps))
 model.add(LSTM(100, activation='relu', return_sequences=True))
-model.add(TimeDistributed(Dense(1)))
+model.add(TimeDistributed(Dense(num_features)))
 model.compile(optimizer='adam', loss='mse')
 # fit model
-model.fit(sequence, sequence, epochs=300, verbose=0)
+
+#inputs = Input(shape=(time_steps,num_features))
+#encoded = LSTM(100)(inputs)
+#decoded = RepeatVector(time_steps)(encoded)
+#decoded = LSTM(num_features, return_sequences=True)(decoded)
+#sequence_autoencoder = Model(inputs, decoded)
+#encoder = Model(inputs, encoded)
+
+generator = Spark_RDD_DataGenerator(n_data.sample(True, 0.30), batch_size=20000)
+
+model.fit_generator(generator=generator, use_multiprocessing=False, epochs=10, verbose=2,)# workers=6, )
+
+
 # demonstrate recreation
-yhat = model.predict(sequence, verbose=0)
-print(yhat[0,:,0])
-
-# COMMAND ----------
-
-sequence = array([0.1, 0.2, 0.3, 0.4, 7.5, 0.6, 0.7, 0.8, 0.9]).reshape(1,n_in,1)
-model.predict(sequence, verbose=0)
+#yhat = model.predict(sequence, verbose=0)
+#print(yhat[0,:,0])
 
 # COMMAND ----------
 

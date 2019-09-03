@@ -40,7 +40,7 @@ class TestWidgets(object):
         assert(w.serial_number == w2.serial_number)
         w2_json = w2.to_json()
         assert(type(w2_json) is  str)
-        assert w2.line_id == "1"
+        assert (type(w2.line_id) is str)
     
     def test_many_widgets_to_json(self):
         widgets = [generate_widget().to_json() for i in range(0,10)]

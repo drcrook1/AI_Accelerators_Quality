@@ -39,15 +39,12 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages('src'),
+    include_package_data=True,
     package_dir={'': 'src'},
     install_requires=[
-        'python-dateutil',
-    ],
-    extras_require={
-        'ml':  [
-            'scikit-learn==0.20.3',
-            'torch==1.1.0',
-            'joblib',
-        ],
+        "tensorflow",
+        "keras",
+        "sklearn"
+    ]
     },
 )

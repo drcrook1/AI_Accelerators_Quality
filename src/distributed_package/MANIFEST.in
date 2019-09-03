@@ -1,1 +1,2 @@
 include README.md LICENSE.txt
+include src/*/ml_assets/*

@@ -46,5 +46,4 @@ setup(
         "keras",
         "sklearn"
     ]
-    },
 )

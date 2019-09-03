@@ -24,9 +24,9 @@ def run(event_json):
     classifier = WidgetClassifier()
     classifier.load_model()
     widget.classification = classifier.predict(widget)
-
+    widget.classification.std_dist = 99.0
     try:
-        if(widget.classification.is_good() is False):
+        if(widget.classification.is_good is False):
             post_bad_widget_to_web(widget)
         
         widget.persist_sql(get_db_cxn())

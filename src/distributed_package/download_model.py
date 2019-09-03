@@ -21,7 +21,7 @@ except Exception:
 
 az_ws = Workspace(sub_id, rg, ml_ws_name)
 
-prefix = "./ProcessTelemetry/ml_assets/"
+prefix = "./src/ai_acc_quality/ml/ml_assets/"
 
 if not os.path.exists(prefix):
     os.makedirs(prefix)

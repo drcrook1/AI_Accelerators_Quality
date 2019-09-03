@@ -18,15 +18,7 @@ class Widget_Classification(Base_Model):
     mean : float = None
     threshold : float = None
     classified_time : datetime = None
-
-    def is_good(self) -> bool:
-        """
-        Returns True for good and False for bad
-        """
-        good = True
-        if(self.std_dist > self.threshold):
-            good = False
-        return good
+    is_good : bool = None
 
     def to_dict(self) -> Tuple[Result, Dict]:
         d = {}
@@ -35,7 +27,7 @@ class Widget_Classification(Base_Model):
         d["mean"] = self.mean
         d["threshold"] = self.threshold
         d["classified_time"] = self.classified_time.isoformat()
-        d["is_good"] = self.is_good()
+        d["is_good"] = self.is_good
         return Result(True), d
 
     @classmethod
@@ -45,6 +37,7 @@ class Widget_Classification(Base_Model):
         c.std = data["std"]
         c.mean = data["mean"]
         c.threshold = data["threshold"]
+        c.is_good = data["is_good"]
         try:
             c.classified_time = datetime.strptime(data["classified_time"].split(".")[0], "%Y-%m-%dT%H:%M:%S")
         except Exception:
@@ -117,7 +110,7 @@ class Widget(Base_Model):
         time =  str(self.classification.classified_time.isoformat().split(".")[0])
         values = (
             self.serial_number, self.classification.std_dist, self.classification.std, self.classification.mean,
-            self.classification.threshold, self.classification.is_good(), 
+            self.classification.threshold, self.classification.is_good, 
             self.factory_id, self.line_id, time)
         cursor.execute(query, values)
         cursor.commit()

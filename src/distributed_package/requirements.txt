@@ -5,3 +5,5 @@ azure-cosmosdb-table
 pyodbc
 azureml-sdk>=1.0.55
 fastavro
+keras
+tensorflow

@@ -1,2 +1,3 @@
 include README.md LICENSE.txt
-include src/*/ml_assets/*
+include src/ai_acc_quality/ml/ml_assets/anomaly/*.pkl
+include src/ai_acc_quality/ml/ml_assets/anomaly/*.h5

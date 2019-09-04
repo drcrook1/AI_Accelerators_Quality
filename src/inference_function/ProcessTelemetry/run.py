@@ -3,9 +3,9 @@ Author: David Crook
 Email: DaCrook@Microsoft.com
 """
 import os
-from .ai_acc_quality.ml.widget_classifier import WidgetClassifier
-from .ai_acc_quality.data_models.widget import Widget
-from .ai_acc_quality.connectors.storage import get_db_cxn, get_tbl_cnxn
+from ai_acc_quality.ml.widget_classifier import WidgetClassifier
+from ai_acc_quality.data_models.widget import Widget
+from ai_acc_quality.connectors.storage import get_db_cxn, get_tbl_cnxn
 import requests
 import logging
 

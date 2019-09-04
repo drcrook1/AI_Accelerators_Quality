@@ -30,7 +30,5 @@ RUN chmod -x /run.py
 
 ENV PYTHONUNBUFFERED 1
 
-# Turn on the Flask-DebugToolbar
-ENV FLASK_DEBUG 1
-
 CMD ["python", "/run.py"]
+#CMD ["gunicorn", "-b", "0.0.0.0:80", "-w", "1", "run:app"]

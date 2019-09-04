@@ -12,3 +12,4 @@ scipy
 azure
 azure-eventhub
 azure-cosmosdb-table
+gunicorn

@@ -15,7 +15,8 @@ def webServerEndpoint():
 def post_bad_widget_to_web(widget : Widget):
     url = os.environ['SignalIOServerHttpEndpoint']
     widget.telemetry = None
-    requests.post(url, json=widget.to_json())
+    w_json = widget.to_json()
+    requests.post(url, json=w_json)
     return True
 
 def run(event_json):

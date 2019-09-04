@@ -54,13 +54,13 @@ class WidgetClassifier(Base_Alg):
         cluster_assignment = self.cluster.predict(feature_map)
         if(cluster_assignment == self.anomaly_definition["anomaly"]):
             wc.is_good = False
-            wc.std_dist = 4
-            wc.std = 5
+            #wc.std_dist = 4
+            #wc.std = 5
         else:
             wc.is_good = True
-            wc.std_dist = 0.5
-            wc.std = 5
+            #wc.std_dist = 0.5
+            #wc.std = 5
         wc.classified_time = datetime.utcnow()
-        wc.threshold = 3
-        wc.mean = 1
+        #wc.threshold = 3
+        #wc.mean = 1
         return wc

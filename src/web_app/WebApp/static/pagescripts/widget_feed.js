@@ -17,5 +17,6 @@ ko.applyBindings(feedvm, document.getElementById("sidebar"));
 
 var socket = io();
 socket.on('live_badwidget', function(message) {
-    add_feed_widget(feedvm, create_widget_feed_item(JSON.parse(message)))
+    //add_feed_widget(feedvm, create_widget_feed_item(JSON.parse(message)))
+    add_feed_widget(feedvm, create_widget_feed_item(message));
 });

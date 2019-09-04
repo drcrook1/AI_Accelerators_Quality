@@ -17,6 +17,7 @@ def post_bad_widget_to_web(widget : Widget):
     widget.telemetry = None
     w_json = widget.to_json()
     requests.post(url, json=w_json)
+    logging.info("#### --- PROCESSED ANOMALY WIDGET --- ####")
     return True
 
 def run(event_json):
@@ -29,7 +30,6 @@ def run(event_json):
     try:
         if(widget.classification.is_good is False):
             post_bad_widget_to_web(widget)
-        
         widget.persist_sql(get_db_cxn())
         widget.persist_table(get_tbl_cnxn())
         logging.info("completed widget: {}".format(widget.serial_number))

@@ -19,6 +19,9 @@ var baseUrl = getUrl .protocol + "//" + getUrl.host;
 
 var socket = io();
 socket.on('live_badwidget', function(message) {
-    //add_feed_widget(feedvm, create_widget_feed_item(JSON.parse(message)))
-    add_feed_widget(feedvm, create_widget_feed_item(message));
+    if(typeof(message) == "string"){
+        add_feed_widget(feedvm, create_widget_feed_item(JSON.parse(message)));
+    } else {
+        add_feed_widget(feedvm, create_widget_feed_item(message));
+    }
 });

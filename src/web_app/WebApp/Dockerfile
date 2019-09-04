@@ -2,6 +2,7 @@ FROM continuumio/miniconda3
 
 RUN apt-get update -y
 RUN apt-get upgrade -y
+RUN apt-get install curl -y
 
 RUN apt-get install build-essential libssl-dev libffi-dev unixodbc-dev -y
 

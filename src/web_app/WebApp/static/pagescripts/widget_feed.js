@@ -15,6 +15,8 @@ function feed_vm(){
 feedvm = new feed_vm();
 ko.applyBindings(feedvm, document.getElementById("sidebar"));
 
+var baseUrl = getUrl .protocol + "//" + getUrl.host;
+
 var socket = io();
 socket.on('live_badwidget', function(message) {
     //add_feed_widget(feedvm, create_widget_feed_item(JSON.parse(message)))

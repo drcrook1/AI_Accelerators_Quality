@@ -4,9 +4,10 @@ Email: DaCrook@Microsoft.com
 """
 import os
 from .some_module.some_package import some_function
-from ai_acc_quality.ml.widget_classifier import WidgetClassifier
-from ai_acc_quality.data_models.widget import Widget
-from ai_acc_quality.connectors.storage import get_db_cxn, get_tbl_cnxn
+from .some_module.some_module_two.some_package_two import some_function_two
+from .ai_acc_quality.ml.widget_classifier import WidgetClassifier
+from .ai_acc_quality.data_models.widget import Widget
+from .ai_acc_quality.connectors.storage import get_db_cxn, get_tbl_cnxn
 import requests
 import logging
 

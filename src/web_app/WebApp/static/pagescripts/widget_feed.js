@@ -15,6 +15,7 @@ function feed_vm(){
 feedvm = new feed_vm();
 ko.applyBindings(feedvm, document.getElementById("sidebar"));
 
+var getUrl = window.location;
 var baseUrl = getUrl .protocol + "//" + getUrl.host;
 
 var socket = io();

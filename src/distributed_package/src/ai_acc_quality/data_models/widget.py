@@ -2,9 +2,9 @@
 Author: David Crook
 Email: DaCrook@Microsoft.com
 """
-from ai_acc_quality.result import Result, Error
-from ai_acc_quality.data_models.base_model import Base_Model
-from ai_acc_quality.data_models.telemetry import Telemetry
+from ..result import Result, Error
+from .base_model import Base_Model
+from .telemetry import Telemetry
 from typing import List, Tuple, Dict
 from datetime import datetime
 import json

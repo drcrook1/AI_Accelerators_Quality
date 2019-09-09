@@ -2,8 +2,8 @@
 Author: David Crook
 Email: DaCrook@Microsoft.com
 """
-from ai_acc_quality.result import Result, Error
-from ai_acc_quality.data_models.base_model import Base_Model
+from ..result import Result, Error
+from .base_model import Base_Model
 from datetime import datetime
 from typing import Tuple, Dict
 import json

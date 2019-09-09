@@ -3,7 +3,6 @@ Author: David Crook
 Email: DaCrook@Microsoft.com
 """
 from abc import ABC, abstractclassmethod
-from ai_acc_quality.result import Result
 from typing import Dict, Tuple
 import json
 

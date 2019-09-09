@@ -2,8 +2,8 @@
 Author: David Crook
 Email: DaCrook@Microsoft.com
 """
-from ai_acc_quality.ml.base_alg import Base_Alg
-from ai_acc_quality.data_models.widget import Widget, Widget_Classification
+from .base_alg import Base_Alg
+from ..data_models.widget import Widget, Widget_Classification
 import random
 from datetime import datetime
 from keras.models import load_model

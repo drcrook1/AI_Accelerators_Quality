@@ -6,3 +6,8 @@ pyodbc
 azure
 requests
 python-dateutil
+keras
+tensorflow
+sklearn
+numpy
+pandas

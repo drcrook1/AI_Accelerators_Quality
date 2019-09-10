@@ -16,5 +16,5 @@ if __name__ == "__main__":
             widgets.append(helpers.generate_widget())
         res = helpers.push_to_event_hub(sender, widgets, sleep=1)
         if(res is True):
-            print("pushed 99 normal & 1 anomaly")
+            print("pushed 10 normal & 1 anomaly")
         time.sleep(1)

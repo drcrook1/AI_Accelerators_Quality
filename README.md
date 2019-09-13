@@ -3,3 +3,6 @@ AI/ML Accelerator sample for training and inferencing very large quantities of s
 
 ## Introduciton
 [![](http://img.youtube.com/vi/9lcVYeRf3aQ/0.jpg)](http://www.youtube.com/watch?v=9lcVYeRf3aQ "Accelerator Intro")
+
+## Architecture Overview
+[![](http://img.youtube.com/vi/1T7-mecN-Gc/0.jpg)](http://www.youtube.com/watch?v=1T7-mecN-Gc "Architecture Overview")

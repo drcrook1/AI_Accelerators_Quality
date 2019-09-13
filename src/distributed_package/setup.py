@@ -44,6 +44,8 @@ setup(
     install_requires=[
         "tensorflow",
         "keras",
-        "sklearn"
+        "sklearn",
+        "numpy",
+        "pandas"
     ]
 )

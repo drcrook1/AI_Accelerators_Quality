@@ -1,0 +1,74 @@
+pipeline:
+    name: AnomalyTrainAutoCluster
+    parameters: # pipeline execution level parameters which can be changed run by run
+        num_clusters:
+            type: int
+            default: 5
+        ml_memory_capacity:
+            type: int
+            default: 100
+    data_references:
+        RawDataPath:
+            datastore: rawstore
+            path_on_datastore: "/"
+        ProcessedDataPath:
+            datastore: processedstore
+            path_on_datastore: "/"
+        ModelStorePath:
+            datastore: modelstore
+            path_on_datastore: "/"
+    default_compute: cpu # Value comes from arm template creation
+    steps:
+        Step1:
+            compute: cpu
+            runconfig: "../src/anomaly_auto_cluster/src/train/run_config.yml" #in relation to current working directory
+            inputs:
+                InputData:
+                    source: RawDataPath
+                    type: mount
+            outputs:
+                OutputData:
+                    destination: ProcessedDataPath #made up name for reference in future steps
+                    datastore: processedstore
+                    type: mount
+            arguments: #permanently affixed to a pipeline
+            - "--input_mount_path"
+            - input:InputData #colon notation says; look at the yaml area before colon and find sub item after colon.
+            - "--output_mount_path"
+            - output:OutputData
+            python_script_step:
+                name: "ProcessRawData"
+                script_name: "pre_process.py" #in relation to source_directory
+                source_directory: "../src/anomaly_auto_cluster/src/train/" #in relation to current working directory
+                allow_reuse: true
+        Step2:
+            compute: cpu
+            runconfig: "../src/anomaly_auto_cluster/src/train/run_config.yml" #in relation to current working directory
+            inputs:
+                InputData:
+                    source: ProcessedData #from the made up name in step1's output data
+                    type: mount
+            outputs:
+                OutputData:
+                    destination: Predictions #made up name for reference in future steps
+                    datastore: predictions
+                    type: mount
+            parameters:
+                num_clusters:
+                  source: num_clusters
+                ml_memory_capacity:
+                  source: ml_memory_capacity
+            arguments: #permanently affixed to a pipeline
+            - "--input_mount_path"
+            - input:InputData #colon notation says; look at the yaml area before colon and find sub item after colon.
+            - "--output_mount_path"
+            - output:OutputData
+            - "--num_clusters"
+            - parameter:num_clusters
+            - "--ml_memory_capacity"
+            - parameter:ml_memory_capacity
+            python_script_step:
+                name: "Train"
+                script_name: "train.py" #in relation to source_directory
+                source_directory: "../src/anomaly_auto_cluster/src/train/" #in relation to current working directory
+                allow_reuse: true
